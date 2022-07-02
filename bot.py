@@ -601,7 +601,7 @@ def inziaorgia(call):
             {'orgia': call.message.message_id, 'utente': call.from_user.id, 'nomeutente': call.from_user.first_name,
              'ruolo': 'fondatore'})
         documents = dbinfo.find({'orgia': call.message.message_id})
-        num = dbinfo.find({'orgia': call.message.message_id}).count()
+        num = dbinfo.find({'orgia': call.message.message_id}).count({})
         print(num)
         if cerca is None:
             bot.answer_callback_query(call.id, "❌ » Non puoi eseguire quest'azione perchè non hai creato te l'orgia",
