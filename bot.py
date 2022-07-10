@@ -2682,13 +2682,18 @@ def quiz(message):
         salvaerrore(ex)
 
 
-@bot.message_handler(content_types=['text'])
-def startmess(message): Thread(target=mess, args=[message]).start()
 
+
+@bot.message_handler(content_types=['text'] )
+def startmess(message): Thread(target=mess, args=[message]).start()
 
 def mess(message):
     incrementa_decrementa_stato(message.from_user.first_name, message.from_user.id, "esperienza", "+")
     cerca = dbinfo.find_one({'argomento': 'quiza'})
+    verifica = str(message.chat.id)
+    if verifica[0] == '-' and message.chat.id != gruppo and message.chat.id != canale_artehub and message.chat.id != canale_gruppo and message.chat.id != canale_log : 
+        bot.send_photo(message.chat.id,photo = 'https://telegra.ph/file/b6b04fe523e57d367326e.jpg' ,caption = '𝐂𝐡𝐚𝐭 𝐧𝐨𝐧 𝐚𝐮𝐭𝐨𝐫𝐢𝐳𝐳𝐚𝐭𝐚 ❌')
+        bot.leave_chat(message.chat.id)
     if cerca['messa'] + 1 >= cerca['randoma']:
         dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},
                                    upsert=True)
