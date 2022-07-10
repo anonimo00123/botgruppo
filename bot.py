@@ -2,7 +2,6 @@
 import math
 import random
 from threading import Thread
-from jinja2 import pass_environment
 import requests
 import telebot
 from pexels_api import API
