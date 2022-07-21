@@ -20,7 +20,7 @@ client = MongoClient(
     "mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 # ! Bot token
-bot = telebot.TeleBot("5319671019:AAG_uJRmF0S_g7RGnEw7xcpbkOIiqKTe4ms")
+bot = telebot.TeleBot("5414774013:AAGrm2RFGc1KijttY35ON3WattdBM7RRc7Y")
 
 
 # ! Connessione globale
