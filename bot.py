@@ -2924,7 +2924,7 @@ def rispostaprima(call):
 
 # ! Avvio del bot
 try: 
-    bot.polling()
+    bot.infinity_polling()
 except Exception as ex:
     salvaerrore(ex)
   
