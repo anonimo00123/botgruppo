@@ -518,6 +518,25 @@ def bagasciamometro(message):
                     random.randint(0, 100)) + " % 🙇‍♀️</i>")
     except Exception as ex:
         salvaerrore(ex) 
+#* Maranzamometro 
+@bot.edited_message_handler(commands=['maranzamometro', 'MARANZAMOMETRO'], chat_types='supergroup')
+@bot.message_handler(commands=['maranzamometro', 'MARANZAMOMETRO'], chat_types='supergroup')
+def startmaranzamometro(message): Thread(target=maranzamometro, args=[message]).start()
+
+
+def maranzamometro(message):
+    try:
+        if chatblacklist(message.chat.id) is True : 
+            try_to(message,
+                "🎲 »<i> " + namechanger(message.from_user.first_name, message.from_user.id) + " è maranza al " + str(
+                    random.randint(0, 100)) + " % 🥷</i>")
+    except Exception as ex:
+        salvaerrore(ex)
+        
+        
+        
+        
+        
 
 # * Infamometro
 
