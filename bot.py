@@ -56,7 +56,8 @@ def connetti(database, collection):
             return client.get_database(database).babyname
         elif database == 'status' and collection == 4 : 
             return client.get_database(database).babysurname
-
+        elif database == 'oroscopo': 
+            return client.get_database(database).inforoscopo
     except Exception as ex:
         print("Errori di connessione, DB : " + str(database) + " collection: " + str(collection))
         print(ex)
@@ -77,6 +78,8 @@ dbruoli = connetti("ruoli", 0)
 dbquiz = connetti("status", 2)
 db_baby_name = connetti("status",3)
 db_baby_surname = connetti("status",4)
+dboroscopo = connetti("oroscopo",0)
+
 
 
 def ottieniutente(utente : str):
