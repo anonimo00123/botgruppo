@@ -545,7 +545,9 @@ def getoroscopo(message):
     try: 
         oro = dboroscopo.find_one({'utente': message.from_user.id})
         if oro is None : creaoroscopo(message)
-        elif oro["prossimo"] < time.time() and oro is not None : creaoroscopo(message)
+        elif oro["prossimo"] < time.time() and oro is not None : 
+            dboroscopo.delete_many({'utente':message.from_user.id})
+            creaoroscopo(message)
         else :
             bot.send_message(message.chat.id,  "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n"+
         "<i> 💖 Amore: </i><code>" + str(oro["amore"]) +"</code>\n"+
