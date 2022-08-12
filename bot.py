@@ -504,6 +504,66 @@ def nazimometro(message):
     except Exception as ex:
         salvaerrore(ex)
 
+        
+                
+ 
+#* oroscopo 
+def creaoroscopo(message): 
+    try: 
+        amore = random.randint(0,10)
+        lavoro = random.randint(0,10)
+        benessere = random.randint(0,10)
+        fortuna = random.randint(0,10) 
+        intelligenza = random.randint(0,10) 
+        nerd = random.randint(0,10) 
+        prossimo = time.time() + 86400.0
+        bot.send_message(message.chat.id, "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n"+
+        "<i> 💖 Amore: </i><code>" + str(amore) +"</code>\n"+
+        "<i>👷 Lavoro: </i><code>" + str(lavoro) +"</code>\n"+
+        "<i>🥗 Salute: </i><code>" + str(benessere) +"</code>\n"+
+        "<i>🎰 Fortuna: </i><code>" + str(fortuna) +"</code>\n"+
+        "<i>🧠 Intelligenza: </i><code>" + str(intelligenza) +"</code>\n"+
+        "<i>🤓 Nerd: </i><code>" + str(nerd) +"</code>\n",parse_mode="html"
+        )
+        dboroscopo.insert_one({ 
+            "amore": amore,
+            "lavoro": lavoro, 
+            "salute": benessere, 
+            "fortuna": fortuna, 
+            "intelligenza": intelligenza, 
+            "nerd": nerd, 
+            "utente": message.from_user.id, 
+            "prossimo": prossimo
+        })
+    except Exception as ex: 
+        salvaerrore(ex)
+
+def getoroscopo(message): 
+    try: 
+        oro = dboroscopo.find_one({'utente': message.from_user.id})
+        if oro is None : creaoroscopo(message)
+        elif oro["prossimo"] < time.time() and oro is not None : creaoroscopo(message)
+        else :
+            bot.send_message(message.chat.id,  "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n"+
+        "<i> 💖 Amore: </i><code>" + str(oro["amore"]) +"</code>\n"+
+        "<i>👷 Lavoro: </i><code>" + str(oro["lavoro"]) +"</code>\n"+
+        "<i>🥗 Salute: </i><code>" + str(oro["salute"]) +"</code>\n"+
+        "<i>🎰 Fortuna: </i><code>" + str(oro["fortuna"]) +"</code>\n"+
+        "<i>🧠 Intelligenza: </i><code>" + str(oro["intelligenza"]) +"</code>\n"+
+        "<i>🤓 Nerd: </i><code>" + str(oro["nerd"]) +"</code>\n", parse_mode="html"
+            )
+    except Exception as ex: 
+        salvaerrore(ex)
+
+@bot.edited_message_handler(commands=['oroscopo', 'OROSCOPO'], chat_types='supergroup')
+@bot.message_handler(commands=['oroscopo', 'OROSCOPO'], chat_types='supergroup')
+def startbagasciamometro(message): Thread(target=ori, args=[message]).start()
+def ori(message): 
+    try: 
+        getoroscopo(message)
+    except Exception as ex: 
+        salvaerrore(ex)
+        
 #* bagasciamometro 
 @bot.edited_message_handler(commands=['bagasciamometro', 'BAGASCIAMOMETRO'], chat_types='supergroup')
 @bot.message_handler(commands=['bagasciamometro', 'BAGASCIAMOMETRO'], chat_types='supergroup')
