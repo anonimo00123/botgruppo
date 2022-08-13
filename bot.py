@@ -520,7 +520,7 @@ def creaoroscopo(message):
         intelligenza = random.randint(0,10) 
         nerd = random.randint(0,10) 
         prossimo = time.time() + 86400.0
-        bot.send_message(message.chat.id, "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n"+
+        bot.send_message(message.chat.id, "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n\n"+
         "<i>💖 Amore: </i><code>" + str(amore) +"</code>\n"+
         "<i>👷 Lavoro: </i><code>" + str(lavoro) +"</code>\n"+
         "<i>🥗 Salute: </i><code>" + str(benessere) +"</code>\n"+
@@ -549,7 +549,7 @@ def getoroscopo(message):
             dboroscopo.delete_many({'utente':message.from_user.id})
             creaoroscopo(message)
         else :
-            bot.send_message(message.chat.id,  "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n"+
+            bot.send_message(message.chat.id,  "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n\n"+
         "<i>💖 Amore: </i><code>" + str(oro["amore"]) +"</code>\n"+
         "<i>👷 Lavoro: </i><code>" + str(oro["lavoro"]) +"</code>\n"+
         "<i>🥗 Salute: </i><code>" + str(oro["salute"]) +"</code>\n"+
