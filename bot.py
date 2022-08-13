@@ -521,7 +521,7 @@ def creaoroscopo(message):
         nerd = random.randint(0,10) 
         prossimo = time.time() + 86400.0
         bot.send_message(message.chat.id, "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n"+
-        "<i> 💖 Amore: </i><code>" + str(amore) +"</code>\n"+
+        "<i>💖 Amore: </i><code>" + str(amore) +"</code>\n"+
         "<i>👷 Lavoro: </i><code>" + str(lavoro) +"</code>\n"+
         "<i>🥗 Salute: </i><code>" + str(benessere) +"</code>\n"+
         "<i>🎰 Fortuna: </i><code>" + str(fortuna) +"</code>\n"+
@@ -550,7 +550,7 @@ def getoroscopo(message):
             creaoroscopo(message)
         else :
             bot.send_message(message.chat.id,  "<b> Oroscopo di " +namechanger(message.from_user.first_name, message.from_user.id)+"</b>\n"+
-        "<i> 💖 Amore: </i><code>" + str(oro["amore"]) +"</code>\n"+
+        "<i>💖 Amore: </i><code>" + str(oro["amore"]) +"</code>\n"+
         "<i>👷 Lavoro: </i><code>" + str(oro["lavoro"]) +"</code>\n"+
         "<i>🥗 Salute: </i><code>" + str(oro["salute"]) +"</code>\n"+
         "<i>🎰 Fortuna: </i><code>" + str(oro["fortuna"]) +"</code>\n"+
@@ -565,7 +565,8 @@ def getoroscopo(message):
 def startbagasciamometro(message): Thread(target=ori, args=[message]).start()
 def ori(message): 
     try: 
-        getoroscopo(message)
+        if chatblacklist(message.chat.id) is True : 
+            getoroscopo(message)
     except Exception as ex: 
         salvaerrore(ex)
         
