@@ -2521,7 +2521,7 @@ def accettazione(message):
                                  "#UTENTECERCADIENTRARE \n <b>•Di: </b>" + namechanger(message.from_user.first_name,
                                                                                        message.from_user.id) + " [<code>" + str(
                                      message.from_user.id) + "</code>]", reply_markup=tastiera, parse_mode='html')
-            y = bot.send_message(gruppo, namechanger(message.from_user.first_name,message.from_user.id) + " 𝐜𝐞𝐫𝐜𝐚 𝐝𝐢 𝐞𝐧𝐭𝐫𝐚𝐫𝐞 🚪", parese_mode= "html", reply_markup=tastiera)
+            y = bot.send_message(gruppo, namechanger(message.from_user.first_name,message.from_user.id) + " 𝐜𝐞𝐫𝐜𝐚 𝐝𝐢 𝐞𝐧𝐭𝐫𝐚𝐫𝐞 🚪", parse_mode= "html", reply_markup=tastiera)
             dbinfo.insert_one({'argomento': 'accettazione', 'message': x.message_id, 'chat': canale_log,
                                'utente': message.from_user.id, 'nome': message.from_user.first_name, 'groupmsg' : y.message_id})
     except Exception as ex:
