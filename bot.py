@@ -2624,6 +2624,7 @@ def accetto(call):
                 bot.send_photo(trova['utente'], 'https://telegra.ph/file/7b9242b74ff493f7ceecf.jpg',
                                caption=" <i>Benvenuto su Gruppo ita comportati bene 😊</i>", reply_markup=tastiera,
                                parse_mode='html')
+                dbinfo.delete_many({'argomento': 'accettazione', 'utente': trova['utente']})
 
         else:
             bot.answer_callback_query(call.id, "👮 » Devi essere admin per svolgere questa azione", show_alert=True)
@@ -2656,6 +2657,7 @@ def inaccettazione(call):
                                                                                           call.from_user.id),
                     canale_log, trova['message'], parse_mode="html")
                 bot.send_message(trova['utente'], "<b>Non sei stato approvato su Gruppo ita ❌</b>", parse_mode='html')
+                dbinfo.delete_many({'argomento': 'accettazione', 'utente': trova['utente']})
         else:
             bot.answer_callback_query(call.id, "👮 » Devi essere admin per svolgere questa azione", show_alert=True)
 
@@ -3023,4 +3025,5 @@ try:
     bot.infinity_polling()
 except Exception as ex:
     salvaerrore(ex)
+  
   
