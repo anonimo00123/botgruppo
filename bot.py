@@ -1,6 +1,7 @@
 # ! Import
 import math
 import random
+from sre_constants import GROUPREF_UNI_IGNORE
 from threading import Thread
 import requests
 import telebot
@@ -196,6 +197,7 @@ canale_gruppo = -1001579720607
 canale_artehub = -1001568212776
 canale_log = -1001609514626
 memory = -1001539169495
+quizzes = []
 
 # ! Nuovo uente nello status
 def nuovo_utente_stato(nome, id):
@@ -2596,10 +2598,8 @@ def accetto(call):
         if bot.get_chat_member(gruppo, call.from_user.id).status == 'administrator':
             trova = dbinfo.find_one(
                 {'argomento': 'accettazione', 'message': call.message.message_id, 'chat': call.message.chat.id})
-            group = dbinfo.find_one({'groupmsg' : call.message.message_id})
-            if trova is None and group is None:
-                bot.answer_callback_query(call.id, "👥 » utente non trovato", show_alert=True)
-            else:
+            group = dbinfo.find_one({'argomento': 'accettazione', 'groupmsg' : call.message.message_id})
+            if trova is not None :
                 bot.approve_chat_join_request(gruppo, trova['utente'])
                 bot.answer_callback_query(call.id, "✅ » utente approvato", show_alert=True)
                 bot.edit_message_text(
@@ -2625,6 +2625,34 @@ def accetto(call):
                                caption=" <i>Benvenuto su Gruppo ita comportati bene 😊</i>", reply_markup=tastiera,
                                parse_mode='html')
                 dbinfo.delete_many({'argomento': 'accettazione', 'utente': trova['utente']})
+            elif group is not None :
+                bot.approve_chat_join_request(gruppo, group['utente'])
+                bot.answer_callback_query(call.id, "✅ » utente approvato", show_alert=True)
+                bot.edit_message_text(
+                     "✅ » 𝐮𝐭𝐞𝐧𝐭𝐞 𝐚𝐩𝐩𝐫𝐨𝐯𝐚𝐭𝐨 𝐝𝐚 " + namechanger(call.from_user.first_name,
+                                                                                      call.from_user.id),
+                    gruppo, group['groupmsg'], parse_mode="html")
+                bot.edit_message_text(
+                    call.message.text + "\n\n ✅ » 𝐮𝐭𝐞𝐧𝐭𝐞 𝐚𝐩𝐩𝐫𝐨𝐯𝐚𝐭𝐨 𝐝𝐚 " + namechanger(call.from_user.first_name,
+                                                                                      call.from_user.id),
+                    canale_log, group['message'], parse_mode="html")
+                tastiera = types.InlineKeyboardMarkup()
+                regole = types.InlineKeyboardButton(text='Regole 🚔', callback_data='regole')
+                tastiera.add(regole)
+                canale = types.InlineKeyboardButton(text='Canale 🧸', url='https://t.me/canale_gruppoita')
+                inno = types.InlineKeyboardButton(text=' Inno 🎸', url='https://t.me/canale_gruppoita/388')
+                tastiera.add(canale, inno)
+                chatta = types.InlineKeyboardButton(text='Inizia a chattare 💬', url='https://t.me/+8wk5E8JndRM4N2Ux')
+                tastiera.add(chatta)
+                bot.send_message(gruppo, "<i>Date il benvenuto a </i> " + str(
+                    namechanger(group['nome'], group['utente'])) + " 🥳\n<i>è il " + str(
+                    bot.get_chat_member_count(gruppo)) + "° membro del gruppo</i>", parse_mode='html')
+                bot.send_photo(group['utente'], 'https://telegra.ph/file/7b9242b74ff493f7ceecf.jpg',
+                               caption=" <i>Benvenuto su Gruppo ita comportati bene 😊</i>", reply_markup=tastiera,
+                               parse_mode='html')
+                dbinfo.delete_many({'argomento': 'accettazione', 'utente': trova['utente']})
+            else:
+               bot.answer_callback_query(call.id, "👥 » utente non trovato", show_alert=True)
 
         else:
             bot.answer_callback_query(call.id, "👮 » Devi essere admin per svolgere questa azione", show_alert=True)
@@ -2642,10 +2670,8 @@ def inaccettazione(call):
         if bot.get_chat_member(gruppo, call.from_user.id).status == 'administrator':
             trova = dbinfo.find_one(
                 {'argomento': 'accettazione', 'message': call.message.message_id, 'chat': call.message.chat.id})
-            group = dbinfo.find_one({'groupmsg' : call.message.message_id})
-            if trova is None and group is None:
-                bot.answer_callback_query(call.id, "👥 » utente non trovato", show_alert=True)
-            else:
+            group = dbinfo.find_one({'argomento': 'accettazione', 'groupmsg' : call.message.message_id})
+            if trova is not None :
                 bot.decline_chat_join_request(gruppo, trova['utente'])
                 bot.answer_callback_query(call.id, "❌ » utente non approvato", show_alert=True)
                 bot.edit_message_text(
@@ -2657,7 +2683,23 @@ def inaccettazione(call):
                                                                                           call.from_user.id),
                     canale_log, trova['message'], parse_mode="html")
                 bot.send_message(trova['utente'], "<b>Non sei stato approvato su Gruppo ita ❌</b>", parse_mode='html')
-                dbinfo.delete_many({'argomento': 'accettazione', 'utente': trova['utente']})
+                dbinfo.delete_many({'argomento': 'accettazione', 'utente': trova['utente']}) 
+            elif group is not None: 
+                bot.decline_chat_join_request(gruppo, group['utente'])
+                bot.answer_callback_query(call.id, "❌ » utente non approvato", show_alert=True)
+                bot.edit_message_text(
+                     "❌ » 𝐮𝐭𝐞𝐧𝐭𝐞 𝐧𝐨𝐧 𝐚𝐩𝐩𝐫𝐨𝐯𝐚𝐭𝐨 𝐝𝐚  " + namechanger(call.from_user.first_name,
+                                                                                      call.from_user.id),
+                    gruppo, group['groupmsg'], parse_mode="html")
+                bot.edit_message_text(
+                    call.message.text + "\n\n ❌ » 𝐮𝐭𝐞𝐧𝐭𝐞 𝐧𝐨𝐧 𝐚𝐩𝐩𝐫𝐨𝐯𝐚𝐭𝐨 𝐝𝐚 " + namechanger(call.from_user.first_name,
+                                                                                          call.from_user.id),
+                    canale_log, group['message'], parse_mode="html")
+                bot.send_message(group['utente'], "<b>Non sei stato approvato su Gruppo ita ❌</b>", parse_mode='html')
+                dbinfo.delete_many({'argomento': 'accettazione', 'utente': group['utente']}) 
+            else:
+                bot.answer_callback_query(call.id, "👥 » utente non trovato", show_alert=True)
+
         else:
             bot.answer_callback_query(call.id, "👮 » Devi essere admin per svolgere questa azione", show_alert=True)
 
@@ -2903,6 +2945,7 @@ def canale(message):
 
 
 # ! quiz
+
 def quiz(message):
     try:
         n = dbinfo.find_one({'trova': 1})
@@ -2922,6 +2965,7 @@ def quiz(message):
                                  "❓Traccia »<i>" + str(cerca['traccia']) + "</i>\n\n<i>💬 Risposte: \n A. " + str(
                                      cerca['a']) + "\n B. " + str(cerca['b']) + "\n C. " + str(cerca['c']) + "</i>",
                                  parse_mode='html', reply_markup=tastiera)
+            quizzes.append(x.message_id)
             dbinfo.insert_one({'argomento': 'quiz', 'quizid': x.message_id, 'corretta': cerca['corretta']})
 
     except Exception as ex:
@@ -2946,12 +2990,13 @@ def mess(message):
 def rispostaprima(call):
     try:
         cerca = dbinfo.find_one({'quizid': call.message.message_id})
-        if cerca is None:
+        if cerca is None  or quizzes.count(call.message.message_id) == 0 :
             bot.answer_callback_query(call.id, "❌ » Hanno già risposto a questo quiz", show_alert=True)
         else:
             if (dbinfo.find_one(
                     {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id}) is None):
-                if cerca['corretta'] == 'a':
+                if cerca['corretta'] == 'a'  :
+                    quizzes.remove(call.message.message_id)
                     won = random.randint(0, 250)
                     bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato! \n 🌟 Hai vinto " + str(
                         won) + " punti esperienza", show_alert=True)
@@ -2976,12 +3021,13 @@ def rispostaprima(call):
 def rispostaprima(call):
     try:
         cerca = dbinfo.find_one({'quizid': call.message.message_id})
-        if cerca is None:
+        if cerca is None or quizzes.count(call.message.message_id) == 0 :
             bot.answer_callback_query(call.id, "❌ » Hanno già risposto a questo quiz", show_alert=True)
         else:
             if (dbinfo.find_one(
                     {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id}) is None):
-                if cerca['corretta'] == 'b':
+                if cerca['corretta'] == 'b' :
+                    quizzes.remove(call.message.message_id)
                     bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato!", show_alert=True)
                     bot.edit_message_text('<i>🏆 » Quiz indovinato da ' + namechanger(call.from_user.first_name,
                                                                                       call.from_user.id) + "</i>",
@@ -3000,12 +3046,13 @@ def rispostaprima(call):
 def rispostaprima(call):
     try:
         cerca = dbinfo.find_one({'quizid': call.message.message_id})
-        if cerca is None:
+        if cerca is None  or quizzes.count(call.message.message_id) == 0 :
             bot.answer_callback_query(call.id, "❌ » Hanno già risposto a questo quiz", show_alert=True)
         else:
             if (dbinfo.find_one(
                     {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id}) is None):
                 if cerca['corretta'] == 'c':
+                    quizzes.remove(call.message.message_id)
                     bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato!", show_alert=True)
                     bot.edit_message_text('<i>🏆 » Quiz indovinato da ' + namechanger(call.from_user.first_name,
                                                                                       call.from_user.id) + "</i>",
@@ -3025,5 +3072,3 @@ try:
     bot.infinity_polling()
 except Exception as ex:
     salvaerrore(ex)
-  
-  
