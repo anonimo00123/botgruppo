@@ -2521,8 +2521,9 @@ def accettazione(message):
                                  "#UTENTECERCADIENTRARE \n <b>•Di: </b>" + namechanger(message.from_user.first_name,
                                                                                        message.from_user.id) + " [<code>" + str(
                                      message.from_user.id) + "</code>]", reply_markup=tastiera, parse_mode='html')
+            y = bot.send_message(gruppo, namechanger(message.from_user.first_name,message.from_user.id) + " 𝐜𝐞𝐫𝐜𝐚 𝐝𝐢 𝐞𝐧𝐭𝐫𝐚𝐫𝐞 🚪", parese_mode= "html", reply_markup=tastiera)
             dbinfo.insert_one({'argomento': 'accettazione', 'message': x.message_id, 'chat': canale_log,
-                               'utente': message.from_user.id, 'nome': message.from_user.first_name})
+                               'utente': message.from_user.id, 'nome': message.from_user.first_name, 'groupmsg' : y.message_id})
     except Exception as ex:
         salvaerrore(ex)
 
@@ -2595,15 +2596,20 @@ def accetto(call):
         if bot.get_chat_member(gruppo, call.from_user.id).status == 'administrator':
             trova = dbinfo.find_one(
                 {'argomento': 'accettazione', 'message': call.message.message_id, 'chat': call.message.chat.id})
-            if trova is None:
+            group = dbinfo.find_one({'groupmsg' : call.message.message_id})
+            if trova is None and group is None:
                 bot.answer_callback_query(call.id, "👥 » utente non trovato", show_alert=True)
             else:
                 bot.approve_chat_join_request(gruppo, trova['utente'])
                 bot.answer_callback_query(call.id, "✅ » utente approvato", show_alert=True)
                 bot.edit_message_text(
-                    call.message.text + "\n\n ✅ » utente approvato da " + namechanger(call.from_user.first_name,
+                     "✅ » 𝐮𝐭𝐞𝐧𝐭𝐞 𝐚𝐩𝐩𝐫𝐨𝐯𝐚𝐭𝐨 𝐝𝐚 " + namechanger(call.from_user.first_name,
                                                                                       call.from_user.id),
-                    call.message.chat.id, call.message.message_id, parse_mode="html")
+                    gruppo, trova['groupmsg'], parse_mode="html")
+                bot.edit_message_text(
+                    call.message.text + "\n\n ✅ » 𝐮𝐭𝐞𝐧𝐭𝐞 𝐚𝐩𝐩𝐫𝐨𝐯𝐚𝐭𝐨 𝐝𝐚 " + namechanger(call.from_user.first_name,
+                                                                                      call.from_user.id),
+                    canale_log, trova['message'], parse_mode="html")
                 tastiera = types.InlineKeyboardMarkup()
                 regole = types.InlineKeyboardButton(text='Regole 🚔', callback_data='regole')
                 tastiera.add(regole)
@@ -2635,15 +2641,20 @@ def inaccettazione(call):
         if bot.get_chat_member(gruppo, call.from_user.id).status == 'administrator':
             trova = dbinfo.find_one(
                 {'argomento': 'accettazione', 'message': call.message.message_id, 'chat': call.message.chat.id})
-            if trova is None:
+            group = dbinfo.find_one({'groupmsg' : call.message.message_id})
+            if trova is None and group is None:
                 bot.answer_callback_query(call.id, "👥 » utente non trovato", show_alert=True)
             else:
                 bot.decline_chat_join_request(gruppo, trova['utente'])
                 bot.answer_callback_query(call.id, "❌ » utente non approvato", show_alert=True)
                 bot.edit_message_text(
-                    call.message.text + "\n\n ❌ » utente non approvato da " + namechanger(call.from_user.first_name,
+                     "❌ » 𝐮𝐭𝐞𝐧𝐭𝐞 𝐧𝐨𝐧 𝐚𝐩𝐩𝐫𝐨𝐯𝐚𝐭𝐨 𝐝𝐚  " + namechanger(call.from_user.first_name,
+                                                                                      call.from_user.id),
+                    gruppo, trova['groupmsg'], parse_mode="html")
+                bot.edit_message_text(
+                    call.message.text + "\n\n ❌ » 𝐮𝐭𝐞𝐧𝐭𝐞 𝐧𝐨𝐧 𝐚𝐩𝐩𝐫𝐨𝐯𝐚𝐭𝐨 𝐝𝐚 " + namechanger(call.from_user.first_name,
                                                                                           call.from_user.id),
-                    call.message.chat.id, call.message.message_id, parse_mode="html")
+                    canale_log, trova['message'], parse_mode="html")
                 bot.send_message(trova['utente'], "<b>Non sei stato approvato su Gruppo ita ❌</b>", parse_mode='html')
         else:
             bot.answer_callback_query(call.id, "👮 » Devi essere admin per svolgere questa azione", show_alert=True)
