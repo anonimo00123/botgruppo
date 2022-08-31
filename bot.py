@@ -1091,12 +1091,31 @@ def sputa(message):
         else:
             try:
                 bot.send_message(message.chat.id, "💦 » <i>" + namechanger(message.from_user.first_name,
-                                                                        message.from_user.id) + " sputato in culo a " + namechanger(
+                                                                        message.from_user.id) + " ha sputato in culo a " + namechanger(
                     message.reply_to_message.from_user.first_name, message.reply_to_message.from_user.id) + "</i>",
                                 parse_mode="html")
             except Exception as ex:
                 salvaerrore(ex)
 
+
+@bot.edited_message_handler(commands=['leccafiga', 'LECCAFIGA'], chat_types='supergroup')
+@bot.message_handler(commands=['leccafiga', 'LECCAFIGA'], chat_types='supergroup')
+def startlecca(message): Thread(target=lecca, args=[message]).start()
+
+
+def lecca(message):
+    if chatblacklist(message.chat.id) is True : 
+        id = verifica_esistenza(message)
+        if id == False:
+            try_to(message, "🧐 » <i>Deve rispondere al messaggio dell'utente a cui vuoi leccare la figa</i>")
+        else:
+            try:
+                bot.send_message(message.chat.id, "👅 » <i>" + namechanger(message.from_user.first_name,
+                                                                        message.from_user.id) + " Ha leccato la figa di " + namechanger(
+                    message.reply_to_message.from_user.first_name, message.reply_to_message.from_user.id) + "</i>",
+                                parse_mode="html")
+            except Exception as ex:
+                salvaerrore(ex)
 
 # * abusa
 @bot.edited_message_handler(commands=['abusa', 'ABUSA'], chat_types='supergroup')
