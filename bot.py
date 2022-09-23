@@ -128,7 +128,7 @@ def addask(message):
     if chatblacklist(message.chat.id) is True : 
         if contenuto := verify(message, 'addask') is False : nontrovato(message, '/addask [domanda]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione')
-        elif '#Addask\n' in contenuto : try_to(message,"Hashtag riservato al log ❌")
+        elif "#Addask\n" in contenuto : try_to(message,"Hashtag riservato al log ❌")
         elif verificahaimai(contenuto) or secondaverifica(contenuto) : try_to(message, "La domanda deve finire con un punto di domanda alla fine ❌")
         else: 
             dbhaimai = client.get_database('newask').newaskcoll
@@ -150,9 +150,9 @@ def secondaverifica(domanda: str) :
 def startaddask(message): Thread(target=addask, args=[message]).start()
 def addask(message): 
     if chatblacklist(message.chat.id) is True : 
-        if contenuto := verify(message, 'addask') is False : nontrovato(message, '/addhaimai [haimai]')
+        if contenuto := verify(message, 'addhaimai') is False : nontrovato(message, '/addhaimai [haimai]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
-        elif '#Addhaimai\n' in contenuto : try_to(message,"Hashtag riservato al log ❌")
+        elif "#Addhaimai\n" in contenuto : try_to(message,"Hashtag riservato al log ❌")
         elif verificahaimai(contenuto) or secondaverifica(contenuto) : try_to(message, "L'hai mai deve finire con un punto di domanda e avere un 'hai mai' nella frase ❌")
         else: 
             dbhaimai = client.get_database('newhaimai').newhaimaicoll
