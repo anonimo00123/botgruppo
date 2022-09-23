@@ -17,8 +17,7 @@ api_id = 11029867
 api_hash = '6662f2f9d722cd6ab5263dfa1d53cb0b'
 
 # ! Client Mongodb
-client = MongoClient(
-    "mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 # ! Bot token
 bot = telebot.TeleBot("5414774013:AAGrm2RFGc1KijttY35ON3WattdBM7RRc7Y")
@@ -33,24 +32,8 @@ def connetti(database, collection):
             return client.get_database(database).stato
         elif database == "status" and collection == 1:
             return client.get_database(database).info
-        elif database == "haimai" and collection == 0:
-            return client.get_database(database).haima
-        elif database == "haimai" and collection == 1:
-            return client.get_database(database).haimaicanc
-        elif database == "haimai" and collection == 2:
-            return client.get_database(database).haimaitot
-        elif database == "ask" and collection == 0:
-            return client.get_database(database).askk
-        elif database == "ask" and collection == 1:
-            return client.get_database(database).askcanc
-        elif database == "ask" and collection == 2:
-            return client.get_database(database).asktot
         elif database == "ruoli" and collection == 0:
             return client.get_database(database).ruoliagg
-        elif database == "haimai" and collection == 3:
-            return client.get_database(database).message
-        elif database == "ask" and collection == 3:
-            return client.get_database(database).message
         elif database == 'status' and collection == 2:
             return client.get_database(database).quiz
         elif database == 'status' and collection == 3 : 
@@ -67,14 +50,6 @@ def connetti(database, collection):
 # ! Variabili globali per la connessione al database
 dbstato = connetti("status", 0)
 dbinfo = connetti("status", 1)
-dbhaimai = connetti("haimai", 0)
-dbhaimaicancellati = connetti("haimai", 1)
-dbhaimaitot = connetti("haimai", 2)
-dbhaimaimessage = connetti("haimai", 3)
-dbask = connetti("ask", 0)
-dbaskcancellati = connetti("ask", 1)
-dbasktot = connetti("ask", 2)
-dbaskmessage = connetti("ask", 3)
 dbruoli = connetti("ruoli", 0)
 dbquiz = connetti("status", 2)
 db_baby_name = connetti("status",3)
@@ -123,29 +98,104 @@ def getfont(text : str) :
     return str(text)
 
 
-# ! haimai and ask generator
-def haimaiandaskgenerator(message, argomento):
-    try:
-        if argomento == "haimai":
-            trova = dbhaimaitot.find_one({'id': 1})
-            id = random.randint(1, trova['total'])
-            cance = dbhaimaicancellati.find_one({'id': id})
-            if cance is None and dbhaimai.find_one({'id': id}) is not None:
-                trova = dbhaimai.find_one({'id': id})
-                return str(trova['haimai'])
-            else:
-                haimaiandaskgenerator(message, argomento)
-        else:
-            trova = dbasktot.find_one({'id': 1})
-            id = random.randint(1, trova['total'])
-            cance = dbaskcancellati.find_one({'id': id})
-            if cance is None and dbask.find_one({'id': id}) is not None:
-                trova = dbask.find_one({'id': id})
-                return str(trova['ask'])
-            else:
-                haimaiandaskgenerator(message, argomento)
-    except Exception as ex:
+@bot.message_handler(commands=['ask','ASK'], chat_types='supergroup')
+def startask(message): Thread(target=ask, args=[message]).start()
+def ask(message): 
+    if chatblacklist(message.chat.id) is True :
+        try: 
+            dbask = client.get_database('newask').newaskcoll
+            bot.send_message(message.chat.id, dbask.find({}).limit(-1).skip(random.randint(1,dbask.count_documents({}) )).next()['ask'])
+        except Exception as ex: 
+            salvaerrore(ex)
+@bot.message_handler(commands=['haimai', 'HAIMAI'], chat_types='supergroup')
+def starthaimai(message): Thread(target=haimai, args=[message]).start()
+def haimai(message): 
+    if chatblacklist(message.chat.id) is True : 
+        try: 
+            dbhaimai = client.get_database('newhaimai').newhaimaicoll
+            bot.send_message(message.chat.id, dbhaimai.find({}).limit(-1).skip(random.randint(1,dbhaimai.count_documents({}) )).next()['haimai'])
+        except Exception as ex : 
+            salvaerrore(ex)
+
+
+# * addask
+@bot.edited_message_handler(regexp='/addask', chat_types='supergroup')
+@bot.edited_message_handler(regexp='/ADDASK', chat_types='supergroup')
+@bot.message_handler(regexp='/addask', chat_types='supergroup')
+@bot.message_handler(regexp='/ADDASK', chat_types='supergroup')
+def startaddask(message): Thread(target=addask, args=[message]).start()
+def addask(message): 
+    if chatblacklist(message.chat.id) is True : 
+        if contenuto := verify(message, 'addask') is False : nontrovato(message, '/addask [domanda]')
+        elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione')
+        elif '#Addask\n' in contenuto : try_to(message,"Hashtag riservato al log ❌")
+        elif verificahaimai(contenuto) or secondaverifica(contenuto) : try_to(message, "La domanda deve finire con un punto di domanda alla fine ❌")
+        else: 
+            dbhaimai = client.get_database('newask').newaskcoll
+            dbhaimai.insert_one({'ask': contenuto, 'autore':message.from_user.id})
+            try_to(message, "✅ » <i>Ask aggiunta correttamente</i>")
+
+def verificahaimai(domanda:str): 
+    if domanda[len(domanda)] != '?' : return True
+def secondaverifica(domanda: str) : 
+    if 'hai mai' in domanda.lower() : return False 
+    else : return True
+    
+            
+# * addhaimai
+@bot.edited_message_handler(regexp='/addhaimai', chat_types='supergroup')
+@bot.edited_message_handler(regexp='/ADDHAIMAI', chat_types='supergroup')
+@bot.message_handler(regexp='/addhaimai', chat_types='supergroup')
+@bot.message_handler(regexp='/ADDHAIMAI', chat_types='supergroup')
+def startaddask(message): Thread(target=addask, args=[message]).start()
+def addask(message): 
+    if chatblacklist(message.chat.id) is True : 
+        if contenuto := verify(message, 'addask') is False : nontrovato(message, '/addhaimai [haimai]')
+        elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
+        elif '#Addhaimai\n' in contenuto : try_to(message,"Hashtag riservato al log ❌")
+        elif verificahaimai(contenuto) or secondaverifica(contenuto) : try_to(message, "L'hai mai deve finire con un punto di domanda e avere un 'hai mai' nella frase ❌")
+        else: 
+            dbhaimai = client.get_database('newhaimai').newhaimaicoll
+            dbhaimai.insert_one({'haimai': contenuto, 'autore':message.from_user.id})
+            try_to(message, "✅ » <i>Hai mai aggiunta correttamente</i>")
+            removehaimai= types.InlineKeyboardMarkup()
+            btnElimina = types.InlineKeyboardButton(text='Cancella ❌',callback_data='delhaimai')
+            removehaimai.add(btnElimina)
+            bot.send_message(canale_log, '#Addask\n' +contenuto, reply_markup=removehaimai)            
+#! Delask 
+@bot.callback_query_handler(func=lambda c: c.data == 'delask')
+def delask(call):
+    try: 
+        dbnewask = client.get_database('newask').newaskcoll 
+        if  trova := dbnewask.find_one({'ask': call.message.text.replace('#Addask\n','')}) is True: 
+            if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
+                dbnewask.delete_many({'ask':  call.message.text.replace('#Addask\n','') })
+                bot.answer_callback_query(call.id, '✅ Domanda cancellata correttamente')
+            else : 
+                bot.answer_callback_query(call.id, "❌ devi essere l'autore della domanda per cancellarla", show_alert=True)
+        else : 
+            bot.answer_callback_query(call.id, "❌ Domanda non trovata ")
+
+    except Exception as ex: 
         salvaerrore(ex)
+
+#! Delask 
+@bot.callback_query_handler(func=lambda c: c.data == 'delhaimai')
+def delask(call):
+    try: 
+        dbnewhaimai= client.get_database('newhaimai').newhaimaicoll 
+        if  trova := dbnewhaimai.find_one({'ask': call.message.text.replace('#Addhaimai\n','')}) is True: 
+            if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
+                dbnewhaimai.delete_many({'haimai':  call.message.text.replace('#Addhaimaik\n','') })
+                bot.answer_callback_query(call.id, '✅ Hai mai cancellato correttamente')
+            else : 
+                bot.answer_callback_query(call.id, "❌ devi essere l'autore dell' hai mai per cancellarla", show_alert=True)
+        else : 
+            bot.answer_callback_query(call.id, "❌ Hai mai non trovato")
+
+    except Exception as ex: 
+        salvaerrore(ex)
+        
 
     # ! Cerca ruolo
 
@@ -975,22 +1025,7 @@ def haimai(message):
         try_to(message, "❓»<i>" + str(haimaiandaskgenerator(message, "haimai")) + "</i>")
 
 
-# * ask
 
-@bot.edited_message_handler(commands=['ask', 'ASK'], chat_types='supergroup')
-@bot.message_handler(commands=['ask', 'ASK'], chat_types='supergroup')
-def startask(message): Thread(target=ask, args=[message]).start()
-
-
-def ask(message):
-    if chatblacklist(message.chat.id) is True : 
-        try:
-            bot.send_video(message.chat.id, open('domanda.mp4','rb'), caption="❓»<i>" + haimaiandaskgenerator(message, "ask") + "</i>",reply_to_message_id=message.message_id,parse_mode='html')
-        except Exception as ex:
-            try:
-                bot.send_video(message.chat.id, open('domanda.mp4','rb'),caption="❓»<i>" + haimaiandaskgenerator(message, "ask") + "</i>",parse_mode='html')
-            except Exception as ex:
-                salvaerrore(ex)
 
 
 # * Operatore
@@ -1507,135 +1542,9 @@ def meteo(message):
                 salvaerrore(ex)
 
 
-# * addask
-@bot.edited_message_handler(regexp='/addask', chat_types='supergroup')
-@bot.edited_message_handler(regexp='/ADDASK', chat_types='supergroup')
-@bot.message_handler(regexp='/addask', chat_types='supergroup')
-@bot.message_handler(regexp='/ADDASK', chat_types='supergroup')
-def startaddask(message): Thread(target=addask, args=[message]).start()
 
 
-def addask(message):
-    if chatblacklist(message.chat.id) is True : 
-        contenuto = verify(message, 'addask')
-        if contenuto == False:
-            nontrovato(message, "/addask [domanda]")
-        else:
-            if cercaoperatoredaid(message) != None:
-                cerca = dbaskcancellati.find_one({})
-                if cerca != None:
-                    iddi = cerca['id']
-                    dbask.insert_one({'ask': contenuto, "name": message.from_user.first_name, "id": iddi,
-                                    "userid": message.from_user.id})
-                else:
-                    cerca = dbasktot.find_one({'id': 1})
-                    iddi = cerca['total'] + 1
-                    dbask.insert_one(
-                        {'ask': contenuto, "name": message.from_user.first_name, "id": iddi,
-                        'userid': message.from_user.id})
-                try_to(message, "✅ » <i>Domanda aggiunta correttamente</i>")
-                try:
-                    tastiera = types.InlineKeyboardMarkup()
-                    tastiera.add(types.InlineKeyboardButton(text="🗑 Rimuovi ask", callback_data="rimuoviask"))
-                    dbasktot.find_one_and_update({'id': 1}, {"$set": {'total': iddi}}, upsert=True)
-                    x = bot.send_message(canale_log, "❓#ADD_ASK \n<b>•Di:</b> " + namechanger(message.from_user.first_name,
-                                                                                            message.from_user.id) + " [<code>" + str(
-                        message.from_user.id) + "</code>]\n<b>Domanda: </b>" + str(contenuto).replace("<", "").replace(">",
-                                                                                                                    "") + "\n<b>•Id domanda: </b>" + str(
-                        iddi), reply_markup=tastiera, parse_mode="html")
-                    dbaskmessage.insert_one({"id": iddi, "autore": message.from_user.id, "message": x.message_id})
-                except Exception as ex:
-                    salvaerrore(ex)
-            else:
-                try_to(message, "🛠 » <i>" + namechanger(message.from_user.first_name,
-                                                        message.from_user.id) + " devi essere operatore per aggiungere domande</i>")
 
-
-# * addhaimai
-@bot.edited_message_handler(regexp='/addhaimai', chat_types='supergroup')
-@bot.edited_message_handler(regexp='/ADDHAIMAI', chat_types='supergroup')
-@bot.message_handler(regexp='/addhaimai', chat_types='supergroup')
-@bot.message_handler(regexp='/ADDHAIMAI', chat_types='supergroup')
-def startaddhaimai(message): Thread(target=addhaimai, args=[message]).start()
-
-
-def addhaimai(message):
-    if chatblacklist(message.chat.id) is True : 
-        contenuto = verify(message, 'addhaimai')
-        if contenuto == False:
-            nontrovato(message, "/addhaimai [hai mai]")
-        else:
-            if cercaoperatoredaid(message) is not None:
-                cerca = dbhaimaicancellati.find_one({})
-                if cerca is not None:
-                    iddi = cerca['id']
-                    dbhaimai.insert_one(
-                        {'haimai': contenuto, "name": message.from_user.first_name, "id": iddi,
-                        "userid": message.from_user.id})
-                else:
-                    cerca = dbhaimaitot.find_one({'id': 1})
-                    iddi = cerca['total'] + 1
-                    dbhaimai.insert_one(
-                        {'haimai': contenuto, "name": message.from_user.first_name, "id": iddi,
-                        'userid': message.from_user.id})
-                try_to(message, "✅ » <i>Hai mai aggiunto correttamente</i>")
-                try:
-                    tastiera = types.InlineKeyboardMarkup()
-                    tastiera.add(types.InlineKeyboardButton(text="🗑 Rimuovi haimai", callback_data="rimuovihaimai"))
-                    dbhaimaitot.find_one_and_update({'id': 1}, {"$set": {'total': iddi}}, upsert=True)
-                    x = bot.send_message(canale_log,
-                                        "❓#ADD_HAIMAI \n<b>•Di:</b> " + namechanger(message.from_user.first_name,
-                                                                                    message.from_user.id) + " [<code>" + str(
-                                            message.from_user.id) + "</code>]\n<b>Hai mai: </b>" + str(contenuto).replace(
-                                            "<", "").replace(">", "") + "\n<b>•Id haimai: </b>" + str(iddi),
-                                        reply_markup=tastiera, parse_mode="html")
-                    dbhaimaimessage.insert_one({"id": iddi, "autore": message.from_user.id, "message": x.message_id})
-                except Exception as ex:
-                    salvaerrore(ex)
-            else:
-                try_to(message, "🛠 » <i>" + namechanger(message.from_user.first_name,
-                                                        message.from_user.id) + " devi essere operatore per aggiungere haimai</i>")
-
-
-# ! Call back query
-@bot.callback_query_handler(func=lambda c: c.data == 'rimuoviask')
-def rimuoviaska(call):
-    try:
-
-        trova = dbaskmessage.find_one({'message': call.message.message_id})
-        if trova is None:
-            bot.answer_callback_query(call.id, "❓» ask non trovato", show_alert=True)
-        else:
-            dbask.delete_one({'id': trova['id']})
-            if dbaskcancellati.find_one({'id': trova['id']}) is None:
-                dbaskcancellati.insert_one({'id': trova['id']})
-                bot.answer_callback_query(call.id, "❓» ask cancellato correttamente", show_alert=True)
-                value = dbasktot.find_one({'id': 1})
-                dbasktot.find_one_and_update({'id': 1}, {"$set": {'total': value['total'] - 1}}, upsert=True)
-            bot.edit_message_text(call.message.text + "\n\n<i>Cancellato 🗑</i>", canale_log, call.message.message_id,
-                                  parse_mode="html")
-    except Exception as ex:
-        salvaerrore(ex)
-
-
-@bot.callback_query_handler(func=lambda c: c.data == 'rimuovihaimai')
-def rimuovihaimai(call):
-    try:
-
-        trova = dbhaimaimessage.find_one({'message': call.message.message_id})
-        if trova is None:
-            bot.answer_callback_query(call.id, "❓» Hai mai non trovato", show_alert=True)
-        else:
-            dbhaimai.delete_one({'id': trova['id']})
-            if dbhaimaicancellati.find_one({'id': trova['id']}) is None:
-                dbhaimaicancellati.insert_one({'id': trova['id']})
-                bot.answer_callback_query(call.id, "❓» haimai cancellato correttamente", show_alert=True)
-                value = dbhaimaitot.find_one({'id': 1})
-                dbhaimaitot.find_one_and_update({'id': 1}, {"$set": {'total': value['total'] - 1}}, upsert=True)
-            bot.edit_message_text(call.message.text + "\n\n<i>Cancellato 🗑</i>", canale_log, call.message.message_id,
-                                  parse_mode="html")
-    except Exception as ex:
-        salvaerrore(ex)
 
 
 # * Bestemmie
