@@ -128,7 +128,6 @@ def addask(message):
     if chatblacklist(message.chat.id) is True : 
         if contenuto := verifysecond(message, 'addask') ==  'false': nontrovato(message, '/addask [domanda]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione')
-        elif verificahaimai(contenuto) or secondaverifica(contenuto) : try_to(message, "La domanda deve finire con un punto di domanda alla fine ❌")
         else: 
             dbhaimai = client.get_database('newask').newaskcoll
             dbhaimai.insert_one({'ask': contenuto, 'autore':message.from_user.id})
@@ -151,7 +150,6 @@ def addask(message):
     if chatblacklist(message.chat.id) is True : 
         if contenuto := verifysecond(message, 'addhaimai') ==  'false' : nontrovato(message, '/addhaimai [haimai]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
-        elif verificahaimai(contenuto) or secondaverifica(contenuto) : try_to(message, "L'hai mai deve finire con un punto di domanda e avere un 'hai mai' nella frase ❌")
         else: 
             dbhaimai = client.get_database('newhaimai').newhaimaicoll
             dbhaimai.insert_one({'haimai': contenuto, 'autore':message.from_user.id})
