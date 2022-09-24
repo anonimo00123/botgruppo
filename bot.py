@@ -444,7 +444,7 @@ def addask(message):
             removeask=  types.InlineKeyboardMarkup()
             btnElimina = types.InlineKeyboardButton(text='Cancella ❌',callback_data='delask')
             removeask.add(btnElimina)
-            bot.send_message(canale_log, '#Addhaimai\n' + str(contenuto) , reply_markup=removeask)  
+            bot.send_message(canale_log, '#Addask\n' + str(contenuto) , reply_markup=removeask)  
 def verificahaimai(domanda:str): 
     if domanda[len(domanda)] != '?' : return True
 def secondaverifica(domanda: str) : 
@@ -494,7 +494,7 @@ def delask(call):
 def delask(call):
     try: 
         dbnewhaimai= client.get_database('newhaimai').newhaimaicoll 
-        trova = dbnewhaimai.find_one({'ask': call.message.text.replace('#Addhaimai\n','')})
+        trova = dbnewhaimai.find_one({'haimai': call.message.text.replace('#Addhaimai\n','')})
         if  trova is not None: 
             if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
                 dbnewhaimai.delete_many({'haimai':  call.message.text.replace('#Addhaimaik\n','') })
