@@ -145,8 +145,8 @@ def secondaverifica(domanda: str) :
 @bot.edited_message_handler(regexp='/ADDHAIMAI', chat_types='supergroup')
 @bot.message_handler(regexp='/addhaimai', chat_types='supergroup')
 @bot.message_handler(regexp='/ADDHAIMAI', chat_types='supergroup')
-def startaddask(message): Thread(target=addask, args=[message]).start()
-def addask(message): 
+def startaddask(message): Thread(target=addhaimai, args=[message]).start()
+def addhaimai(message): 
     if chatblacklist(message.chat.id) is True : 
         if contenuto := verifysecond(message, 'addhaimai') ==  'false' : nontrovato(message, '/addhaimai [haimai]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
@@ -1009,16 +1009,6 @@ def allunga(message):
                 utente['cazzo']) + " cm </i>")
 
 
-# * Hai mai
-
-@bot.edited_message_handler(commands=['haimai', 'HAIMAI'], chat_types='supergroup')
-@bot.message_handler(commands=['haimai', 'HAIMAI'], chat_types='supergroup')
-def starthaimai(message): Thread(target=haimai, args=[message]).start()
-
-
-def haimai(message):
-    if chatblacklist(message.chat.id) is True : 
-        try_to(message, "❓»<i>" + str(haimaiandaskgenerator(message, "haimai")) + "</i>")
 
 
 
