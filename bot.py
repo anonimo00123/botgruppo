@@ -420,7 +420,7 @@ def addask(message):
         contenuto = verifysecond(message, 'addask') 
         if contenuto ==  'false': nontrovato(message, '/addask [domanda]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
-        elif '?' not in contenuto : try_to(message, 'Nella domanda ci deve essere almeno un punto interrogativo')
+        elif '?' not in contenuto : try_to(message, 'Nella domanda ci deve essere almeno un punto interrogativo ❌')
         else: 
             dbhaimai.insert_one({'ask': contenuto, 'autore':message.from_user.id})
             try_to(message, "✅ » <i>Ask aggiunta correttamente</i>")
