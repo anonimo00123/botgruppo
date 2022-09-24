@@ -148,7 +148,8 @@ def secondaverifica(domanda: str) :
 def startaddask(message): Thread(target=addhaimai, args=[message]).start()
 def addhaimai(message): 
     if chatblacklist(message.chat.id) is True : 
-        if contenuto := verifysecond(message, 'addhaimai') ==  'false' : nontrovato(message, '/addhaimai [haimai]')
+        contenuto = verifysecond(message, 'addhaimai')
+        if contenuto ==  'false' : nontrovato(message, '/addhaimai [haimai]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
         else:  
             print(contenuto)
@@ -158,7 +159,7 @@ def addhaimai(message):
             removehaimai= types.InlineKeyboardMarkup()
             btnElimina = types.InlineKeyboardButton(text='Cancella ❌',callback_data='delhaimai')
             removehaimai.add(btnElimina)
-            bot.send_message(canale_log, '#Addask\n' + str(contenuto) , reply_markup=removehaimai)            
+            bot.send_message(canale_log, '#Addhaimai\n' + str(contenuto) , reply_markup=removehaimai)            
 #! Delask 
 @bot.callback_query_handler(func=lambda c: c.data == 'delask')
 def delask(call):
