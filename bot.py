@@ -412,7 +412,7 @@ def ask(message):
     if chatblacklist(message.chat.id) is True :
         try: 
             dbask = client.get_database('newask').newaskcoll
-            bot.send_message(message.chat.id, dbask.find({}).limit(-1).skip(random.randint(1,dbask.count_documents({}) )).next()['ask'])
+            bot.send_message(message.chat.id, dbask.find({}).limit(-1).skip(random.randint(1,dbask.count_documents({}) )).next()['ask'],reply_to_message_id=message.message_id)
         except Exception as ex: 
             salvaerrore(ex)
 @bot.message_handler(commands=['haimai', 'HAIMAI'], chat_types='supergroup')
@@ -421,7 +421,7 @@ def haimai(message):
     if chatblacklist(message.chat.id) is True : 
         try: 
             dbhaimai = client.get_database('newhaimai').newhaimaicoll
-            bot.send_message(message.chat.id, dbhaimai.find({}).limit(-1).skip(random.randint(1,dbhaimai.count_documents({}) )).next()['haimai'])
+            bot.send_message(message.chat.id, dbhaimai.find({}).limit(-1).skip(random.randint(1,dbhaimai.count_documents({}) )).next()['haimai'], reply_to_message_id= message.message_id )
         except Exception as ex : 
             salvaerrore(ex)
 
