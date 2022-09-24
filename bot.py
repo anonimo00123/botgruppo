@@ -444,7 +444,7 @@ def addask(message):
             removeask=  types.InlineKeyboardMarkup()
             btnElimina = types.InlineKeyboardButton(text='Cancella ❌',callback_data='delask')
             removeask.add(btnElimina)
-            bot.send_message(canale_log, '#Addask\n' + str(contenuto) , reply_markup=removeask)  
+            bot.send_message(canale_log, '#Addask\n• Ask: ' + str(contenuto) , reply_markup=removeask)  
 def verificahaimai(domanda:str): 
     if domanda[len(domanda)] != '?' : return True
 def secondaverifica(domanda: str) : 
@@ -470,16 +470,16 @@ def addhaimai(message):
             removehaimai= types.InlineKeyboardMarkup()
             btnElimina = types.InlineKeyboardButton(text='Cancella ❌',callback_data='delhaimai')
             removehaimai.add(btnElimina)
-            bot.send_message(canale_log, '#Addhaimai\n' + str(contenuto) , reply_markup=removehaimai)            
+            bot.send_message(canale_log, '#Addhaimai\n• Hai mai: ' + str(contenuto) , reply_markup=removehaimai)            
 #! Delask 
 @bot.callback_query_handler(func=lambda c: c.data == 'delask')
 def delask(call):
     try: 
         dbnewask = client.get_database('newask').newaskcoll 
-        trova=  dbnewask.find_one({'ask': call.message.text.replace('#Addask\n','')})
+        trova=  dbnewask.find_one({'ask': call.message.text.replace('#Addask\n• Ask: ','')})
         if  trova is not None: 
             if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
-                dbnewask.delete_many({'ask':  call.message.text.replace('#Addask\n','') })
+                dbnewask.delete_many({'ask':  call.message.text.replace('#Addask\n• Ask: ','') })
                 bot.answer_callback_query(call.id, '✅ Domanda cancellata correttamente')
                 bot.edit_message_text(call.message.text + '\n❌ Cancellato',call.message.chat.id, call.message.message_id)
             else : 
@@ -495,10 +495,10 @@ def delask(call):
 def delask(call):
     try: 
         dbnewhaimai= client.get_database('newhaimai').newhaimaicoll 
-        trova = dbnewhaimai.find_one({'haimai': call.message.text.replace('#Addhaimai\n','')})
+        trova = dbnewhaimai.find_one({'haimai': call.message.text.replace('#Addhaimai\n• Hai mai: ','')})
         if  trova is not None: 
             if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
-                dbnewhaimai.delete_many({'haimai':  call.message.text.replace('#Addhaimaik\n','') })
+                dbnewhaimai.delete_many({'haimai':  call.message.text.replace('#Addhaimai\n• Hai mai: ','') })
                 bot.answer_callback_query(call.id, '✅ Hai mai cancellato correttamente')
                 bot.edit_message_text(call.message.text + '\n❌ Cancellato',call.message.chat.id, call.message.message_id)
             else : 
