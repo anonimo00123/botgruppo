@@ -481,6 +481,7 @@ def delask(call):
             if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
                 dbnewask.delete_many({'ask':  call.message.text.replace('#Addask\n','') })
                 bot.answer_callback_query(call.id, '✅ Domanda cancellata correttamente')
+                bot.edit_message_text(call.message.text + '\n❌ Cancellato',call.message.chat.id, call.message.message_id)
             else : 
                 bot.answer_callback_query(call.id, "❌ devi essere l'autore della domanda per cancellarla", show_alert=True)
         else : 
@@ -499,6 +500,7 @@ def delask(call):
             if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
                 dbnewhaimai.delete_many({'haimai':  call.message.text.replace('#Addhaimaik\n','') })
                 bot.answer_callback_query(call.id, '✅ Hai mai cancellato correttamente')
+                bot.edit_message_text(call.message.text + '\n❌ Cancellato',call.message.chat.id, call.message.message_id)
             else : 
                 bot.answer_callback_query(call.id, "❌ devi essere l'autore dell' hai mai per cancellarla", show_alert=True)
         else : 
