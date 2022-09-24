@@ -405,13 +405,12 @@ def like(message):
     except Exception as ex:
         salvaerrore(ex)
 
-
+dbask = client.get_database('newask').newaskcoll
 @bot.message_handler(commands=['ask','ASK'], chat_types='supergroup')
 def startask(message): Thread(target=ask, args=[message]).start()
 def ask(message): 
     if chatblacklist(message.chat.id) is True :
         try: 
-            dbask = client.get_database('newask').newaskcoll
             bot.send_message(message.chat.id, dbask.find({}).limit(-1).skip(random.randint(1,dbask.count_documents({}) )).next()['ask'],reply_to_message_id=message.message_id)
         except Exception as ex: 
             try: 
@@ -432,8 +431,7 @@ def haimai(message):
             except Exception as ex: 
                 salvaerrore(ex)
 
-
-
+dbhaimai = client.get_database('newask').newaskcoll
 # * addask
 @bot.edited_message_handler(regexp='/addask', chat_types='supergroup')
 @bot.edited_message_handler(regexp='/ADDASK', chat_types='supergroup')
@@ -446,7 +444,6 @@ def addask(message):
         if contenuto ==  'false': nontrovato(message, '/addask [domanda]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione')
         else: 
-            dbhaimai = client.get_database('newask').newaskcoll
             dbhaimai.insert_one({'ask': contenuto, 'autore':message.from_user.id})
             try_to(message, "✅ » <i>Ask aggiunta correttamente</i>")
             removeask=  types.InlineKeyboardMarkup()
@@ -472,7 +469,6 @@ def addhaimai(message):
         if contenuto ==  'false' : nontrovato(message, '/addhaimai [haimai]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
         else:  
-            dbhaimai = client.get_database('newhaimai').newhaimaicoll
             dbhaimai.insert_one({'haimai': contenuto, 'autore':message.from_user.id})
             try_to(message, "✅ » <i>Hai mai aggiunta correttamente</i>")
             removehaimai= types.InlineKeyboardMarkup()
@@ -483,11 +479,10 @@ def addhaimai(message):
 @bot.callback_query_handler(func=lambda c: c.data == 'delask')
 def delask(call):
     try: 
-        dbnewask = client.get_database('newask').newaskcoll 
-        trova=  dbnewask.find_one({'ask': call.message.text.replace('#Addask\n• Ask: ','')})
+        trova=  dbask.find_one({'ask': call.message.text.replace('#Addask\n• Ask: ','')})
         if  trova is not None: 
             if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
-                dbnewask.delete_many({'ask':  call.message.text.replace('#Addask\n• Ask: ','') })
+                dbask.delete_many({'ask':  call.message.text.replace('#Addask\n• Ask: ','') })
                 bot.answer_callback_query(call.id, '✅ Domanda cancellata correttamente')
                 bot.edit_message_text(call.message.text + '\n\n❌ Cancellato',call.message.chat.id, call.message.message_id)
             else : 
@@ -502,11 +497,10 @@ def delask(call):
 @bot.callback_query_handler(func=lambda c: c.data == 'delhaimai')
 def delask(call):
     try: 
-        dbnewhaimai= client.get_database('newhaimai').newhaimaicoll 
-        trova = dbnewhaimai.find_one({'haimai': call.message.text.replace('#Addhaimai\n• Hai mai: ','')})
+        trova = dbhaimai.find_one({'haimai': call.message.text.replace('#Addhaimai\n• Hai mai: ','')})
         if  trova is not None: 
             if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
-                dbnewhaimai.delete_many({'haimai':  call.message.text.replace('#Addhaimai\n• Hai mai: ','') })
+                dbhaimai.delete_many({'haimai':  call.message.text.replace('#Addhaimai\n• Hai mai: ','') })
                 bot.answer_callback_query(call.id, '✅ Hai mai cancellato correttamente')
                 bot.edit_message_text(call.message.text + '\n\n❌ Cancellato',call.message.chat.id, call.message.message_id)
             else : 
