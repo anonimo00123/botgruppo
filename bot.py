@@ -414,7 +414,11 @@ def ask(message):
             dbask = client.get_database('newask').newaskcoll
             bot.send_message(message.chat.id, dbask.find({}).limit(-1).skip(random.randint(1,dbask.count_documents({}) )).next()['ask'],reply_to_message_id=message.message_id)
         except Exception as ex: 
-            salvaerrore(ex)
+            try: 
+                bot.send_message(message.chat.id, dbask.find({}).limit(-1).skip(random.randint(1,dbask.count_documents({}) )).next()['ask'] )
+            except Exception as ex : 
+                salvaerrore(ex)
+
 @bot.message_handler(commands=['haimai', 'HAIMAI'], chat_types='supergroup')
 def starthaimai(message): Thread(target=haimai, args=[message]).start()
 def haimai(message): 
@@ -423,7 +427,11 @@ def haimai(message):
             dbhaimai = client.get_database('newhaimai').newhaimaicoll
             bot.send_message(message.chat.id, dbhaimai.find({}).limit(-1).skip(random.randint(1,dbhaimai.count_documents({}) )).next()['haimai'], reply_to_message_id= message.message_id )
         except Exception as ex : 
-            salvaerrore(ex)
+            try: 
+                bot.send_message(message.chat.id, dbhaimai.find({}).limit(-1).skip(random.randint(1,dbhaimai.count_documents({}) )).next()['haimai'] )
+            except Exception as ex: 
+                salvaerrore(ex)
+
 
 
 # * addask
