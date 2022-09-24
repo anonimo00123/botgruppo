@@ -23,38 +23,17 @@ client = MongoClient("mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.ne
 bot = telebot.TeleBot("5414774013:AAGrm2RFGc1KijttY35ON3WattdBM7RRc7Y")
 
 
-# ! Connessione globale
-
-def connetti(database, collection):
-    try:
-
-        if database == "status" and collection == 0:
-            return client.get_database(database).stato
-        elif database == "status" and collection == 1:
-            return client.get_database(database).info
-        elif database == "ruoli" and collection == 0:
-            return client.get_database(database).ruoliagg
-        elif database == 'status' and collection == 2:
-            return client.get_database(database).quiz
-        elif database == 'status' and collection == 3 : 
-            return client.get_database(database).babyname
-        elif database == 'status' and collection == 4 : 
-            return client.get_database(database).babysurname
-        elif database == 'oroscopo': 
-            return client.get_database(database).inforoscopo
-    except Exception as ex:
-        print("Errori di connessione, DB : " + str(database) + " collection: " + str(collection))
-        print(ex)
-
 
 # ! Variabili globali per la connessione al database
-dbstato = connetti("status", 0)
-dbinfo = connetti("status", 1)
-dbruoli = connetti("ruoli", 0)
-dbquiz = connetti("status", 2)
-db_baby_name = connetti("status",3)
-db_baby_surname = connetti("status",4)
-dboroscopo = connetti("oroscopo",0)
+dbstato = client.get_database("status").stato
+dbinfo = client.get_database("status").info
+dbruoli = client.get_database("ruoli").ruoliagg
+dbquiz = client.get_database("status").quiz
+db_baby_name = client.get_database("status").babyname
+db_baby_surname = client.get_database("status").babysurname
+dboroscopo = client.get_database("oroscopo").inforoscopo
+dbhaimai = client.get_database('newask').newaskcoll
+dbask = client.get_database('newask').newaskcoll
 
 
 
@@ -405,7 +384,6 @@ def like(message):
     except Exception as ex:
         salvaerrore(ex)
 
-dbask = client.get_database('newask').newaskcoll
 @bot.message_handler(commands=['ask','ASK'], chat_types='supergroup')
 def startask(message): Thread(target=ask, args=[message]).start()
 def ask(message): 
@@ -431,7 +409,6 @@ def haimai(message):
             except Exception as ex: 
                 salvaerrore(ex)
 
-dbhaimai = client.get_database('newask').newaskcoll
 # * addask
 @bot.edited_message_handler(regexp='/addask', chat_types='supergroup')
 @bot.edited_message_handler(regexp='/ADDASK', chat_types='supergroup')
@@ -442,7 +419,8 @@ def addask(message):
     if chatblacklist(message.chat.id) is True : 
         contenuto = verifysecond(message, 'addask') 
         if contenuto ==  'false': nontrovato(message, '/addask [domanda]')
-        elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione')
+        elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
+        elif '?' not in contenuto : try_to(message, 'Nella domanda ci deve essere almeno un punto interrogativo')
         else: 
             dbhaimai.insert_one({'ask': contenuto, 'autore':message.from_user.id})
             try_to(message, "✅ » <i>Ask aggiunta correttamente</i>")
@@ -468,6 +446,8 @@ def addhaimai(message):
         contenuto = verifysecond(message, 'addhaimai')
         if contenuto ==  'false' : nontrovato(message, '/addhaimai [haimai]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
+        elif '?' not in contenuto : try_to(message, "Nell'hai mai ci deve essere un punto di domanda ❌")
+        elif 'hai mai' not in contenuto.lower() : try_to(message, "Nell'hai mai ci deve essere scritto almeno una volta hai mai ❌")
         else:  
             dbhaimai.insert_one({'haimai': contenuto, 'autore':message.from_user.id})
             try_to(message, "✅ » <i>Hai mai aggiunta correttamente</i>")
@@ -510,6 +490,7 @@ def delask(call):
 
     except Exception as ex: 
         salvaerrore(ex)
+
 
 
 
