@@ -150,14 +150,15 @@ def addhaimai(message):
     if chatblacklist(message.chat.id) is True : 
         if contenuto := verifysecond(message, 'addhaimai') ==  'false' : nontrovato(message, '/addhaimai [haimai]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
-        else: 
+        else:  
+            print(contenuto)
             dbhaimai = client.get_database('newhaimai').newhaimaicoll
             dbhaimai.insert_one({'haimai': contenuto, 'autore':message.from_user.id})
             try_to(message, "✅ » <i>Hai mai aggiunta correttamente</i>")
             removehaimai= types.InlineKeyboardMarkup()
             btnElimina = types.InlineKeyboardButton(text='Cancella ❌',callback_data='delhaimai')
             removehaimai.add(btnElimina)
-            bot.send_message(canale_log, '#Addask\n' +contenuto, reply_markup=removehaimai)            
+            bot.send_message(canale_log, '#Addask\n' + str(contenuto) , reply_markup=removehaimai)            
 #! Delask 
 @bot.callback_query_handler(func=lambda c: c.data == 'delask')
 def delask(call):
