@@ -34,6 +34,7 @@ db_baby_surname = client.get_database("status").babysurname
 dboroscopo = client.get_database("oroscopo").inforoscopo
 dbhaimai = client.get_database('newask').newaskcoll
 dbask = client.get_database('newask').newaskcoll
+dbaskhot = client.get_database('newaskhot').askhotcoll
 
 
 
@@ -401,11 +402,22 @@ def starthaimai(message): Thread(target=haimai, args=[message]).start()
 def haimai(message): 
     if chatblacklist(message.chat.id) is True : 
         try: 
-            dbhaimai = client.get_database('newhaimai').newhaimaicoll
             bot.send_message(message.chat.id, dbhaimai.find({}).limit(-1).skip(random.randint(1,dbhaimai.count_documents({}) )).next()['haimai'], reply_to_message_id= message.message_id )
         except Exception as ex : 
             try: 
                 bot.send_message(message.chat.id, dbhaimai.find({}).limit(-1).skip(random.randint(1,dbhaimai.count_documents({}) )).next()['haimai'] )
+            except Exception as ex: 
+                salvaerrore(ex)
+
+@bot.message_handler(commands=['askhot', 'ASKHOT'], chat_types='supergroup')
+def startaskhot(message): Thread(target=askhot, args=[message]).start()
+def askhot(message): 
+    if chatblacklist(message.chat.id) is True : 
+        try: 
+            bot.send_message(message.chat.id, dbaskhot.find({}).limit(-1).skip(random.randint(1,dbaskhot.count_documents({}) )).next()['askhot'], reply_to_message_id= message.message_id )
+        except Exception as ex : 
+            try: 
+                bot.send_message(message.chat.id, dbaskhot.find({}).limit(-1).skip(random.randint(1,dbaskhot.count_documents({}) )).next()['askhot'] )
             except Exception as ex: 
                 salvaerrore(ex)
 
@@ -434,7 +446,25 @@ def secondaverifica(domanda: str) :
     if 'hai mai' in domanda.lower() : return False 
     else : return True
     
-            
+# * addhaimai
+@bot.edited_message_handler(regexp='/addaskhot', chat_types='supergroup')
+@bot.edited_message_handler(regexp='/ADDASKHOT', chat_types='supergroup')
+@bot.message_handler(regexp='/addaskhot', chat_types='supergroup')
+@bot.message_handler(regexp='/ADDASKHOT', chat_types='supergroup')
+def startaddaskhot(message): Thread(target=addaskhot, args=[message]).start()
+def addaskhot(message): 
+    if chatblacklist(message.chat.id) is True : 
+        contenuto = verifysecond(message, 'addaskhot')
+        if contenuto ==  'false' : nontrovato(message, '/addaskhot [ask hot]')
+        elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
+        elif '?' not in contenuto : try_to(message, "Nell'ask hot ci deve essere un punto di domanda ❌")
+        else:  
+            dbaskhot.insert_one({'askhot': contenuto, 'autore':message.from_user.id})
+            try_to(message, "✅ » <i>Ask hot aggiunta correttamente</i>")
+            removehaimai= types.InlineKeyboardMarkup()
+            btnElimina = types.InlineKeyboardButton(text='Cancella ❌',callback_data='delaskhot')
+            removehaimai.add(btnElimina)
+            bot.send_message(canale_log, '#Addaskhot\n• ask hot: '+ str(contenuto) , reply_markup=removehaimai)               
 # * addhaimai
 @bot.edited_message_handler(regexp='/addhaimai', chat_types='supergroup')
 @bot.edited_message_handler(regexp='/ADDHAIMAI', chat_types='supergroup')
@@ -492,7 +522,22 @@ def delask(call):
         salvaerrore(ex)
 
 
+@bot.callback_query_handler(func=lambda c: c.data == 'delaskhot')
+def delaskhot(call):
+    try: 
+        trova = dbaskhot.find_one({'askhot': call.message.text.replace('#Addaskhot\n• ask hot: ','')})
+        if  trova is not None: 
+            if trova['autore'] == call.from_user.id or call.from_user.id == 1914266767 : 
+                dbaskhot.delete_many({'askhot':  call.message.text.replace('#Addaskhot\n• ask hot: ','') })
+                bot.answer_callback_query(call.id, '✅ ask hot cancellato correttamente')
+                bot.edit_message_text(call.message.text + '\n\n❌ Cancellato',call.message.chat.id, call.message.message_id)
+            else : 
+                bot.answer_callback_query(call.id, "❌ devi essere l'autore dell' ask hot per cancellarla", show_alert=True)
+        else : 
+            bot.answer_callback_query(call.id, "❌ ask hot non trovato")
 
+    except Exception as ex: 
+        salvaerrore(ex)
 
 
 
