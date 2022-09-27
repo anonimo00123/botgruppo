@@ -447,15 +447,15 @@ def secondaverifica(domanda: str) :
     else : return True
     
 # * addhaimai
-@bot.edited_message_handler(regexp='/addaskhot', chat_types='supergroup')
-@bot.edited_message_handler(regexp='/ADDASKHOT', chat_types='supergroup')
-@bot.message_handler(regexp='/addaskhot', chat_types='supergroup')
-@bot.message_handler(regexp='/ADDASKHOT', chat_types='supergroup')
+@bot.edited_message_handler(regexp='/addhot', chat_types='supergroup')
+@bot.edited_message_handler(regexp='/ADDHOT', chat_types='supergroup')
+@bot.message_handler(regexp='/addhot', chat_types='supergroup')
+@bot.message_handler(regexp='/ADDHOT', chat_types='supergroup')
 def startaddaskhot(message): Thread(target=addaskhot, args=[message]).start()
 def addaskhot(message): 
     if chatblacklist(message.chat.id) is True : 
-        contenuto = verifysecond(message, 'addaskhot')
-        if contenuto ==  'false' : nontrovato(message, '/addaskhot [ask hot]')
+        contenuto = verifysecond(message, 'addhot')
+        if contenuto ==  'false' : nontrovato(message, '/addhot [ask hot]')
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
         elif '?' not in contenuto : try_to(message, "Nell'ask hot ci deve essere un punto di domanda ❌")
         else:  
