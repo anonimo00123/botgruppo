@@ -137,8 +137,11 @@ quizzes = []
 def nuovo_utente_stato(nome, id):
     try:
         dbstato.insert_one({"id": id, "name": nome, "diamanti": diamanti, "soldi": soldi, "succhini": succhini_iniziali,
-                            "bestemmie": bestemmie_iniziali, "rispetto": punti_rispetto_iniziali,
-                            "like": likes_iniziali, "dislike": dislikes_iniziali, "esperienza": xp_iniziali,
+                            "bestemmie": bestemmie_iniziali, 
+                            "rispetto": punti_rispetto_iniziali,
+                            "like": likes_iniziali,
+                             "dislike": dislikes_iniziali, 
+                             "esperienza": xp_iniziali,
                             "seno": random.randint(0, 20), "cazzo": random.randint(0, 20), "entrate": entrate})
     except Exception as ex:
         salvaerrore(ex)
@@ -434,7 +437,7 @@ def addask(message):
         elif cercaoperatoredaid(message) is None : try_to(message, 'Devi essere operatore per svolgere questa operazione ❌')
         elif '?' not in contenuto : try_to(message, 'Nella domanda ci deve essere almeno un punto interrogativo ❌')
         else: 
-            dbhaimai.insert_one({'ask': contenuto, 'autore':message.from_user.id})
+            dbask.insert_one({'ask': contenuto, 'autore':message.from_user.id})
             try_to(message, "✅ » <i>Ask aggiunta correttamente</i>")
             removeask=  types.InlineKeyboardMarkup()
             btnElimina = types.InlineKeyboardButton(text='Cancella ❌',callback_data='delask')
@@ -3035,6 +3038,17 @@ def rispostaprima(call):
             else:
                 bot.answer_callback_query(call.id, "❌ » Puoi rispondere solo una volta", show_alert=True)
     except Exception as ex:
+        salvaerrore(ex)
+
+
+#! Impostazioni del bot 
+@bot.message_handler(commands = ['impostazioni', 'IMPOSTAZIONI'])
+def startimpostazioni(message) : Thread(target=impostazioni, args=[message]).start()
+def impostazioni(message): 
+    try: 
+
+        bot.send_message(message.chat.id, "⚙️ 𝐈𝐦𝐩𝐨𝐬𝐭𝐚𝐳𝐢𝐨𝐧𝐢 𝐝𝐞𝐥 𝐠𝐫𝐮𝐩𝐩𝐨")
+    except Exception as ex: 
         salvaerrore(ex)
 
 
