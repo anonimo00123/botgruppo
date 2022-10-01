@@ -177,6 +177,8 @@ def incrementa_decrementa_stato(nome, id, oggetto, segno):
             return data['bestemmie']
         elif oggetto == 'entrate':
             return data['entrate'] + 1
+        elif oggetto == 'esperienza':
+            dbstato.find_one_and_update({'id': id}, {"$set": {oggetto: value + 10, "name": nome}}, upsert=True)
     except Exception as ex:
         salvaerrore(ex)
 
@@ -1317,6 +1319,36 @@ def stato(message):
                 str(recordo['seno']) + " </code>\n" + "<i>🍆 Cazzo</i> » <code>" +
                 str(recordo['cazzo']) + " </code>\n" + "<i>🐖 bestemmie</i> » <code>" + str(recordo['bestemmie']) +
                 " </code>")
+            try: 
+                bot.send_photo(message.chat.id, open('1.png','rb'), caption="<b>Stato di " + namechanger(message.from_user.first_name,message.from_user.id) + "📊</b> \n" +
+                "<i>🌟 livello </i><code>" + str(calcolo_livello(recordo['esperienza'])).replace(".0", "") + ") </code>\n"
+                + "<i>💶 Soldi</i> » <code>" +
+                str(display(recordo['soldi'])) + " </code>\n" + "<i>💎 Diamanti</i> » <code>" +
+                str(display(recordo['diamanti'])) + " </code>\n" + "<i>🧃Succhini</i> » <code>" +
+                str(display(recordo['succhini'])) + " </code>\n" + "<i>🎉 Rispetto</i> » <code>" +
+                str(recordo['rispetto']) + " </code>\n" + "<i>❤️ Like</i> » <code>" +
+                str(recordo['like']) + " </code>\n" + "<i>👎 Dislike</i> » <code>" +
+                str(recordo['dislike']) + " </code>\n" + "<i>🍐Seno</i> » <code>" +
+                str(recordo['seno']) + " </code>\n" + "<i>🍆 Cazzo</i> » <code>" +
+                str(recordo['cazzo']) + " </code>\n" + "<i>🐖 bestemmie</i> » <code>" + str(recordo['bestemmie']) +
+                " </code>"
+                ,reply_to_message_id=message.message_id, parse_mode='html')
+            except:
+                                bot.send_photo(message.chat.id, open('1.png','rb'), caption="<b>Stato di " + namechanger(message.from_user.first_name,message.from_user.id) + "📊</b> \n" +
+                "<i>🌟 livello </i><code>" + str(calcolo_livello(recordo['esperienza'])).replace(".0", "") + ") </code>\n"
+                + "<i>💶 Soldi</i> » <code>" +
+                str(display(recordo['soldi'])) + " </code>\n" + "<i>💎 Diamanti</i> » <code>" +
+                str(display(recordo['diamanti'])) + " </code>\n" + "<i>🧃Succhini</i> » <code>" +
+                str(display(recordo['succhini'])) + " </code>\n" + "<i>🎉 Rispetto</i> » <code>" +
+                str(recordo['rispetto']) + " </code>\n" + "<i>❤️ Like</i> » <code>" +
+                str(recordo['like']) + " </code>\n" + "<i>👎 Dislike</i> » <code>" +
+                str(recordo['dislike']) + " </code>\n" + "<i>🍐Seno</i> » <code>" +
+                str(recordo['seno']) + " </code>\n" + "<i>🍆 Cazzo</i> » <code>" +
+                str(recordo['cazzo']) + " </code>\n" + "<i>🐖 bestemmie</i> » <code>" + str(recordo['bestemmie']) +
+                " </code>"
+                ,parse_mode='html')
+
+
     except Exception as ex:
         salvaerrore(ex)
 
