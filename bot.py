@@ -32,7 +32,7 @@ dbquiz = client.get_database("status").quiz
 db_baby_name = client.get_database("status").babyname
 db_baby_surname = client.get_database("status").babysurname
 dboroscopo = client.get_database("oroscopo").inforoscopo
-dbhaimai = client.get_database('newask').newaskcoll
+dbhaimai = client.get_database('newhaimai').newhaimaicoll
 dbask = client.get_database('newask').newaskcoll
 dbaskhot = client.get_database('newaskhot').askhotcoll
 
