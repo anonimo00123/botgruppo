@@ -1296,6 +1296,11 @@ def calcolo_livello(esperienza):
     return "<b>" + str(calcolo) + "</b>" + "(" + str(esperienza) + "/" + str(prossimo * 1000)
 
 
+
+
+
+
+
 # * stato
 
 @bot.edited_message_handler(commands=['stato', 'STATO'], chat_types='supergroup')
@@ -1307,25 +1312,50 @@ def stato(message):
     try:
         if chatblacklist(message.chat.id) is True : 
             recordo = controlla_e_crea(message.from_user.first_name, message.from_user.id)
-            bot.send_photo(message.chat.id, open('1.png','rb'), caption="<b>Stato di " + namechanger(message.from_user.first_name,message.from_user.id) + "📊</b> \n" +
+            tastiera = types.InlineKeyboardMarkup()
+            likes = types.InlineKeyboardButton(text=f"❤️ {recordo['like']}", callback_data='Laiks')
+            dislikes = types.InlineKeyboardButton(text=f"👎 {recordo['dislike']}", callback_data='Dislaiks')
+            tastiera.add(likes, dislikes)
+            
+            bot.send_message(message.chat.id,"<b>Stato di " + namechanger(message.from_user.first_name,message.from_user.id) + "📊</b> \n" +
             "<i>🌟 livello </i><code>" + str(calcolo_livello(recordo['esperienza'])).replace(".0", "") + ") </code>\n"
             + "<i>💶 Soldi</i> » <code>" +
             str(display(recordo['soldi'])) + " </code>\n" + "<i>💎 Diamanti</i> » <code>" +
             str(display(recordo['diamanti'])) + " </code>\n" + "<i>🧃Succhini</i> » <code>" +
             str(display(recordo['succhini'])) + " </code>\n" + "<i>🎉 Rispetto</i> » <code>" +
-            str(recordo['rispetto']) + " </code>\n" + "<i>❤️ Like</i> » <code>" +
-            str(recordo['like']) + " </code>\n" + "<i>👎 Dislike</i> » <code>" +
-            str(recordo['dislike']) + " </code>\n" + "<i>🍐Seno</i> » <code>" +
-            str(recordo['seno']) + " </code>\n" + "<i>🍆 Cazzo</i> » <code>" +
-            str(recordo['cazzo']) + " </code>\n" + "<i>🐖 bestemmie</i> » <code>" + str(recordo['bestemmie']) +
+            str(recordo['rispetto']) + " </code>\n" + "<i>🐖 bestemmie</i> » <code>" + str(recordo['bestemmie']) +
             " </code>"
-            ,parse_mode='html')
+            ,parse_mode='html', reply_markup=tastiera)
 
 
     except Exception as ex:
         salvaerrore(ex)
 
+@bot.callback_query_handler(func=lambda c: c.data == 'Laiks')
+def laiks(call):
+    try: 
+        bot.answer_callback_query(call.id, "❤️ » Numero di mi piace del tuo account", show_alert=True)
+    except Exception as ex :
+        salvaerrore(ex)
+@bot.callback_query_handler(func=lambda c: c.data == 'Dislaiks')
+def laiks(call):
+    try: 
+        bot.answer_callback_query(call.id, "👎 » Numero di non mi piace del tuo account", show_alert=True)
+    except Exception as ex :
+        salvaerrore(ex)
 
+
+@bot.message_handler(commands=['misure','MISURE'], chat_types='supergroup')
+@bot.edited_message_handler(commands=['misure', 'MISURE'], chat_types='supergroup')
+def startmisure(message): Thread(target=misure, args=[message] ).start()
+def misure(message): 
+    try:
+        if chatblacklist(message.chat.id) is True: 
+            recordo = controlla_e_crea(message.from_user.first_name, message.from_user.id)
+            try_to(message,f"<b>Misure di {namechanger(message.from_user.first_name, message.from_user.id)} </b>\n\n🍆 <i>Cazzo </i><code>{recordo['cazzo']}</code>\n<i>🍐 Seno </i><code>{recordo['seno']}</code>"
+)
+    except Exception as ex :
+        salvaerrore(ex)
 
 
 # ! Comandi per il controllo dei dati generali della chat
