@@ -1316,21 +1316,33 @@ def stato(message):
             likes = types.InlineKeyboardButton(text=f"❤️ {recordo['like']}", callback_data='Laiks')
             dislikes = types.InlineKeyboardButton(text=f"👎 {recordo['dislike']}", callback_data='Dislaiks')
             tastiera.add(likes, dislikes)
+            rispetto = types.InlineKeyboardButton(text=f"🎉 {recordo['rispetto']}", callback_data='Rispettus')
+            bestemmie = types.InlineKeyboardButton(text=f"🐖 {recordo['bestemmie']}", callback_data='Bestemmius')
+            tastiera.add(rispetto,bestemmie)
             
             bot.send_message(message.chat.id,"<b>Stato di " + namechanger(message.from_user.first_name,message.from_user.id) + "📊</b> \n" +
             "<i>🌟 livello </i><code>" + str(calcolo_livello(recordo['esperienza'])).replace(".0", "") + ") </code>\n"
             + "<i>💶 Soldi</i> » <code>" +
             str(display(recordo['soldi'])) + " </code>\n" + "<i>💎 Diamanti</i> » <code>" +
             str(display(recordo['diamanti'])) + " </code>\n" + "<i>🧃Succhini</i> » <code>" +
-            str(display(recordo['succhini'])) + " </code>\n" + "<i>🎉 Rispetto</i> » <code>" +
-            str(recordo['rispetto']) + " </code>\n" + "<i>🐖 bestemmie</i> » <code>" + str(recordo['bestemmie']) +
-            " </code>"
+            str(display(recordo['succhini'])) + " </code>" 
             ,parse_mode='html', reply_markup=tastiera)
 
 
     except Exception as ex:
         salvaerrore(ex)
-
+@bot.callback_query_handler(func=lambda c: c.data == 'Bestemmius')
+def bestemmius(call):
+    try: 
+        bot.answer_callback_query(call.id, "🐖 » Numero di bestemmie del tuo account", show_alert=True)
+    except Exception as ex :
+        salvaerrore(ex)
+@bot.callback_query_handler(func=lambda c: c.data == 'Rispettus')
+def rispettus(call):
+    try: 
+        bot.answer_callback_query(call.id, "🎉 » Numero di rispetto del tuo account", show_alert=True)
+    except Exception as ex :
+        salvaerrore(ex)
 @bot.callback_query_handler(func=lambda c: c.data == 'Laiks')
 def laiks(call):
     try: 
