@@ -7,7 +7,6 @@ import requests
 import telebot
 from pexels_api import API
 from pymongo import MongoClient
-from telebot import types
 from telethon import functions
 from telethon.sync import TelegramClient
 import time
