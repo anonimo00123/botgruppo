@@ -4,7 +4,7 @@ import random
 from sre_constants import GROUPREF_UNI_IGNORE
 from threading import Thread
 import requests
-import telebot
+from telebot import *
 from pexels_api import API
 from pymongo import MongoClient
 from telethon import functions
