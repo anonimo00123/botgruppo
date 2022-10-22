@@ -4,8 +4,9 @@ import random
 from sre_constants import GROUPREF_UNI_IGNORE
 from threading import Thread
 import requests
-from telebot import *
 from pexels_api import API
+from telebot import types
+import telebot 
 from pymongo import MongoClient
 from telethon import functions
 from telethon.sync import TelegramClient
