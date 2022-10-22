@@ -22,7 +22,7 @@ client = MongoClient("mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.ne
 # ! Bot token
 bot = telebot.TeleBot("5414774013:AAGrm2RFGc1KijttY35ON3WattdBM7RRc7Y")
 
-
+print('bella')
 
 # ! Variabili globali per la connessione al database
 dbstato = client.get_database("status").stato
