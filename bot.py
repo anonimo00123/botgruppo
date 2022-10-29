@@ -2971,7 +2971,7 @@ def canale(message):
 def quiz(message):
     try:
         n = dbinfo.find_one({'trova': 1})
-        numero = random.randint(1, n['nquiz'])
+        numero = 1 #random.randint(1, n['nquiz'])
         if dbinfo.find_one({'argomento': 'rimosso', 'id': n['nquiz']}) != None:
             quiz(message)
         cerca = dbquiz.find_one({'id': numero})
@@ -3028,16 +3028,21 @@ def rispostaprima(call):
                     {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id}) is None):
                 if cerca['corretta'] == 'a'  :
                     quizzes.remove(call.message.message_id)
-                    won = random.randint(0, 250)
-                    bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato! \n 🌟 Hai vinto " + str(
-                        won) + " punti esperienza", show_alert=True)
-                    info = controlla_e_crea(call.from_user.first_name, call.from_user.id)
-                    dbstato.find_one_and_update({'id': call.from_user.id}, {
-                        "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
-                                                upsert=True)
                     bot.edit_message_text('<i>🏆 » Quiz indovinato da ' + namechanger(call.from_user.first_name,
                                                                                       call.from_user.id) + "</i>",
                                           call.message.chat.id, call.message.message_id, parse_mode='html')
+                    won = random.randint(10, 250)
+                    bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato! \n 🌟 Hai vinto " + str(
+                        won) + " punti esperienza", show_alert=True)
+                    info = controlla_e_crea(call.from_user.first_name, call.from_user.id)
+                    niu = gtlvl(info['esperienza'])
+                    vecc = gtlvl(info['esperienza'] + won)
+                    if(niu < vecc ):
+                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}" )    
+                    dbstato.find_one_and_update({'id': call.from_user.id}, {
+                        "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
+                                                upsert=True)
+
                 else:
                     dbinfo.insert_one(
                         {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id})
@@ -3059,10 +3064,20 @@ def rispostaprima(call):
                     {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id}) is None):
                 if cerca['corretta'] == 'b' :
                     quizzes.remove(call.message.message_id)
-                    bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato!", show_alert=True)
                     bot.edit_message_text('<i>🏆 » Quiz indovinato da ' + namechanger(call.from_user.first_name,
                                                                                       call.from_user.id) + "</i>",
                                           call.message.chat.id, call.message.message_id, parse_mode='html')
+                    won = random.randint(10, 250)
+                    bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato! \n 🌟 Hai vinto " + str(
+                        won) + " punti esperienza", show_alert=True)
+                    info = controlla_e_crea(call.from_user.first_name, call.from_user.id)
+                    niu = gtlvl(info['esperienza'])
+                    vecc = gtlvl(info['esperienza'] + won)
+                    if(niu < vecc ):
+                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}" )    
+                    dbstato.find_one_and_update({'id': call.from_user.id}, {
+                        "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
+                                                upsert=True)
                 else:
                     dbinfo.insert_one(
                         {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id})
@@ -3084,10 +3099,20 @@ def rispostaprima(call):
                     {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id}) is None):
                 if cerca['corretta'] == 'c':
                     quizzes.remove(call.message.message_id)
-                    bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato!", show_alert=True)
                     bot.edit_message_text('<i>🏆 » Quiz indovinato da ' + namechanger(call.from_user.first_name,
                                                                                       call.from_user.id) + "</i>",
                                           call.message.chat.id, call.message.message_id, parse_mode='html')
+                    won = random.randint(10, 250)
+                    bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato! \n 🌟 Hai vinto " + str(
+                        won) + " punti esperienza", show_alert=True)
+                    info = controlla_e_crea(call.from_user.first_name, call.from_user.id)
+                    niu = gtlvl(info['esperienza'])
+                    vecc = gtlvl(info['esperienza'] + won)
+                    if(niu < vecc ):
+                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}" )    
+                    dbstato.find_one_and_update({'id': call.from_user.id}, {
+                        "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
+                                                upsert=True)
                 else:
                     dbinfo.insert_one(
                         {'argomento': 'rispostascorretta', 'quiz': cerca['quizid'], 'id': call.from_user.id})
