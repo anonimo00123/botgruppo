@@ -2998,11 +2998,11 @@ def startmess(message): Thread(target=mess, args=[message]).start()
 
 def mess(message):
     if chatblacklist(message.chat.id) is True : 
-        record = dbinfo.find_one({'id': message.from_user.id})
+        record = dbstato.find_one({'id': message.from_user.id})
         old = record['esperienza']
         bf = gtlvl(old)
         incrementa_decrementa_stato(message.from_user.first_name, message.from_user.id, "esperienza", "+")
-        rec = dbinfo.find_one({'id': message.from_user.id})
+        rec = dbstato.find_one({'id': message.from_user.id})
         new = rec['esperienza']
         aft = gtlvl(new)
         if(bf < aft): 
