@@ -3006,7 +3006,7 @@ def mess(message):
         new = rec['esperienza']
         aft = gtlvl(new)
         if(bf < aft): 
-            try_to(message,f"<b>⭐️ {namechanger(message.from_user.first_name)} Hai raggiunto il livello</b> {aft}\n" )
+            try_to(message,f"<b>⭐️ {namechanger(message.from_user.first_name,message.from_user.id)} Hai raggiunto il livello</b> {aft}" )
         cerca = dbinfo.find_one({'argomento': 'quiza'})
         if cerca['messa'] + 1 >= cerca['randoma']:
             dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},
