@@ -2950,7 +2950,10 @@ def guardaspoiler(call):
             visual = dbspoiler.find_one_and_update({'message': trova['message']}, {"$set": {'visualizzazioni': trova['visualizzazioni'] +1 }},
                                     upsert=True)
             trova = dbspoiler.find_one({'message': call.message.message_id})
-            bot.edit_message_text(f"{call.message.text} \n visualizzazioni: {trova['visualizzazioni']}" , gruppo, trova['message'])
+            tastiera = types.InlineKeyboardMarkup()
+            invia = types.InlineKeyboardButton(text='Guarda spoiler 👀', callback_data='lookspoiler')
+            tastiera.add(invia)
+            bot.edit_message_text(f"{call.message.text} \n visualizzazioni: {trova['visualizzazioni']}" , gruppo, trova['message'],reply_markup=tastiera)
     except Exception as ex:
         if "bot was blocked by the user" in str(ex) :
             bot.answer_callback_query(call.id, "🔒» Per visualizzare lo spoiler avvia il bot in privato", show_alert=True)
