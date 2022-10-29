@@ -34,6 +34,8 @@ dboroscopo = client.get_database("oroscopo").inforoscopo
 dbhaimai = client.get_database('newhaimai').newhaimaicoll
 dbask = client.get_database('newask').newaskcoll
 dbaskhot = client.get_database('newaskhot').askhotcoll
+dbspoiler = client.get_database('spoiler').spoilers 
+
 
 
 
@@ -2775,7 +2777,7 @@ def aggiungiquiz(call):
     indietro = types.InlineKeyboardButton(text="🔙 Indietro", callback_data="indietro")
     tastiera.add(indietro)
     try:
-        msg = bot.send_message(call.message.chat.id, '❓     <i>Invia la traccia </i> ', reply_markup=tastiera,
+        msg = bot.send_message(call.message.chat.id, '❓ <i>Invia la traccia </i> ', reply_markup=tastiera,
                                parse_mode='html')
         if dbinfo.find({'argomento': 'addtraccia', "di": call.from_user.id}) != None:  dbinfo.delete_many(
             {'argomento': 'addtraccia', "di": call.from_user.id})
@@ -2892,8 +2894,8 @@ def memor(message):
                                                      message.from_user.id) + " ha inviato uno spoiler 🔒",
                                  reply_markup=tastiera, parse_mode="html")
             bot.send_message(message.chat.id, "<b>🔒» Spoiler inviato</b>", parse_mode='html')
-            dbinfo.insert_one({'argomento': 'spoiler', 'di': message.from_user.id, 'message': y.message_id,
-                               'messageone': x.message_id})
+            dbspoiler.insert_one({'di': message.from_user.id, 'message': y.message_id,
+                               'messageone': x.message_id, 'visualizzazioni': 0})
             eliminaspoiler(message.from_user.id)
         if cercastep != None:
             if cercastep['step'] == 1:
@@ -2934,16 +2936,20 @@ def memor(message):
 
 @bot.callback_query_handler(func=lambda c: c.data == 'lookspoiler')
 def guardaspoiler(call):
-    trova = dbinfo.find_one({'message': call.message.message_id})
+    trova = dbspoiler.find_one({'message': call.message.message_id})
     try:
         if trova is None:
             bot.answer_callback_query(call.id, "🔒» Spoiler non trovato", show_alert=True)
         else:
             x = bot.forward_message(call.from_user.id, memory, trova['messageone'])
+
             bot.answer_callback_query(call.id, "✅ Spoiler inviato in privato", show_alert=True)
             bot.send_message(trova['di'], namechanger(call.from_user.first_name,
-                                                      call.from_user.id) + " ha visualizzato il tuo spoiler 👀",
+                                                      call.from_user.id) + " ha visualizzato il tuo spoiler 👀" ,
                              parse_mode="html")
+            visual = dbspoiler.find_one_and_update({'message': trova['message']}, {"$set": {'visualizzazioni': trova['visualizzazioni'] +1 }},
+                                    upsert=True)
+            bot.edit_message_text(f'{call.message.text} \n visualizzazioni: {visual}' , gruppo, trova['messageone'])
     except Exception as ex:
         if "bot was blocked by the user" in str(ex) :
             bot.answer_callback_query(call.id, "🔒» Per visualizzare lo spoiler avvia il bot in privato", show_alert=True)
