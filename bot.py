@@ -3039,7 +3039,7 @@ def rispostaprima(call):
                     niu = gtlvl(info['esperienza'])
                     vecc = gtlvl(info['esperienza'] + won)
                     if(niu < vecc ):
-                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}" )    
+                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}",parse_mode ='html' )    
                     dbstato.find_one_and_update({'id': call.from_user.id}, {
                         "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
                                                 upsert=True)
@@ -3075,7 +3075,7 @@ def rispostaprima(call):
                     niu = gtlvl(info['esperienza'])
                     vecc = gtlvl(info['esperienza'] + won)
                     if(niu < vecc ):
-                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}" )    
+                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}" ,parse_mode ='html')    
                     dbstato.find_one_and_update({'id': call.from_user.id}, {
                         "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
                                                 upsert=True)
@@ -3110,7 +3110,7 @@ def rispostaprima(call):
                     niu = gtlvl(info['esperienza'])
                     vecc = gtlvl(info['esperienza'] + won)
                     if(niu < vecc ):
-                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}" )    
+                        bot.send_message(gruppo, f"<b>⭐️ {namechanger(call.from_user.first_name,call.from_user.id)} Hai raggiunto il livello</b> {vecc}" ,parse_mode ='html')    
                     dbstato.find_one_and_update({'id': call.from_user.id}, {
                         "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
                                                 upsert=True)
