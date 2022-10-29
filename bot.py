@@ -3009,7 +3009,6 @@ def mess(message):
         if(bf < aft): 
             try_to(message,f"<b>⭐️ {namechanger(message.from_user.first_name,message.from_user.id)} Hai raggiunto il livello</b> {aft}" )
         cerca = dbinfo.find_one({'argomento': 'quiza'})
-        quiz(message)
         if cerca['messa'] + 1 >= cerca['randoma']:
             dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},
                                     upsert=True)
