@@ -2953,7 +2953,7 @@ def guardaspoiler(call):
             tastiera = types.InlineKeyboardMarkup()
             invia = types.InlineKeyboardButton(text='Guarda spoiler 👀', callback_data='lookspoiler')
             tastiera.add(invia)
-            bot.edit_message_text(f"{call.message.text} \n visualizzazioni: {trova['visualizzazioni']}" , gruppo, trova['message'],reply_markup=tastiera)
+            bot.edit_message_text(f"{ namechanger(call.from_user.first_name,call.from_user.id) } ha inviato uno spoiler 🔒 \n visualizzazioni: {trova['visualizzazioni']}" , gruppo, trova['message'],reply_markup=tastiera)
     except Exception as ex:
         if "bot was blocked by the user" in str(ex) :
             bot.answer_callback_query(call.id, "🔒» Per visualizzare lo spoiler avvia il bot in privato", show_alert=True)
