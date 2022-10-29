@@ -220,7 +220,7 @@ def try_to(message, text):
 def chatblacklist(chat : str) : 
 
     verifica = str(chat)
-    if verifica[0] == '-' and chat != gruppo and chat != canale_artehub and chat != canale_gruppo and chat != canale_log and chat != -691548571 : 
+    if verifica[0] == '-' and chat != gruppo and chat != canale_artehub and chat != canale_gruppo and chat != canale_log and chat != -691548571 and chat != -1001599554760 : 
         bot.send_photo(chat,photo = 'https://telegra.ph/file/b6b04fe523e57d367326e.jpg' ,caption = '𝐂𝐡𝐚𝐭 𝐧𝐨𝐧 𝐚𝐮𝐭𝐨𝐫𝐢𝐳𝐳𝐚𝐭𝐚 ❌')
         bot.leave_chat(chat)
         return False 
@@ -2961,6 +2961,7 @@ def canale(message):
     try:
         if message.chat.id == canale_gruppo: bot.forward_message(gruppo, canale_gruppo, message.message_id)
         if message.chat.id == canale_artehub: bot.forward_message(gruppo, canale_artehub, message.message_id)
+        if message.chat.id ==-1001599554760 : bot.forward_message(gruppo, -1001599554760, message.message_id )
     except Exception as ex:
         salvaerrore(ex)
 
