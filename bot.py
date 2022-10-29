@@ -2894,7 +2894,7 @@ def memor(message):
                                                      message.from_user.id) + " ha inviato uno spoiler 🔒",
                                  reply_markup=tastiera, parse_mode="html")
             bot.send_message(message.chat.id, "<b>🔒» Spoiler inviato</b>", parse_mode='html')
-            dbspoiler.insert_one({'di': message.from_user.id, 'message': y.message_id,
+            dbspoiler.insert_one({'di': message.from_user.id,'name':message.from_user.first_name ,'message': y.message_id,
                                'messageone': x.message_id, 'visualizzazioni': 0})
             eliminaspoiler(message.from_user.id)
         if cercastep != None:
@@ -2953,7 +2953,7 @@ def guardaspoiler(call):
             tastiera = types.InlineKeyboardMarkup()
             invia = types.InlineKeyboardButton(text='Guarda spoiler 👀', callback_data='lookspoiler')
             tastiera.add(invia)
-            bot.edit_message_text(f"{ namechanger(call.from_user.first_name,call.from_user.id) } ha inviato uno spoiler 🔒 \n visualizzazioni: {trova['visualizzazioni']}" , gruppo, trova['message'],reply_markup=tastiera)
+            bot.edit_message_text(f"{ namechanger(trova['name'],trova['di'])} ha inviato uno spoiler 🔒 \n visualizzazioni: {trova['visualizzazioni']}" , gruppo, trova['message'],reply_markup=tastiera,parse_mode='html')
     except Exception as ex:
         if "bot was blocked by the user" in str(ex) :
             bot.answer_callback_query(call.id, "🔒» Per visualizzare lo spoiler avvia il bot in privato", show_alert=True)
