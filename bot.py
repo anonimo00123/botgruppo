@@ -3269,7 +3269,8 @@ def checkevent() :
         create_new_event()
         return False 
     elif ris != None : 
-        if time.time() > ris['ttl'] : 
+        b = ris['ttl'] 
+        if time.time() > b: 
             close_event()
             return False 
         else : return True 
