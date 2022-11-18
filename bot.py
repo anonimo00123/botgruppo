@@ -3251,7 +3251,7 @@ def close_event():
         documents = receventuser.find({}).sort('punti', -1).limit(10)
         for document in documents : 
             i = i + 1 
-            classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " + document['punti'] +" ⭐️\n"
+            classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " + str(document['punti'])+" ⭐️\n"
         bot.send_message(canale_gruppo,f"🏆 Vincitori dell'evento {ris['title']} 🏆\n" + classifica ,parse_mode='html') 
         bot.send_message(gruppo,f"🏆 Vincitori dell'evento {ris['title']} 🏆\n" + classifica ,parse_mode='html') 
         receventuser.delete_many({})
@@ -3276,13 +3276,6 @@ def checkevent() :
     else : 
         return True
 
-def event_plus (id,utente,aumento): 
-    if checkevent() : 
-        old = receventuser.find_one({'id':id})
-        if old is None : 
-            receventuser.insert_one({'name': utente, 'id': id, 'punti' : aumento})
-        else : 
-            receventuser.find_one_and_update({'id': id},{"$set": {'name': utente, 'punti': old['punti'] + aumento}},upsert=True)
         
     
 
@@ -3297,7 +3290,7 @@ def rankevento(message):
         documents = receventuser.find({}).sort('punti', -1).limit(10)
         for document in documents : 
             i = i + 1 
-            classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " + document['punti'] +" ⭐️\n"
+            classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " +str(document['punti']) +" ⭐️\n"
             bot.send_message(gruppo,f"🏆 Vincitori dell'evento {ris['title']} 🏆\n" + classifica ,parse_mode='html') 
 
 
@@ -3328,6 +3321,13 @@ def mess(message):
         else:
             dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': cerca['messa'] + 1}}, upsert=True)
 
+def event_plus (id,utente,aumento): 
+    if checkevent() : 
+        old = receventuser.find_one({'id':id})
+        if old is None : 
+            receventuser.insert_one({'name': utente, 'id': id, 'punti' : aumento})
+        else : 
+            receventuser.find_one_and_update({'id': id},{"$set": {'name': utente, 'punti': old['punti'] + aumento}},upsert=True)
 # ! Avvio del bot
 try:
     bot.infinity_polling()
