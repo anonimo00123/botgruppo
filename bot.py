@@ -3110,30 +3110,7 @@ def gtlvl(esperienza: int):
     return math.floor(esperienza / 1000)
 
 
-@bot.message_handler(content_types=['text'])
-def startmess(message): Thread(target=mess, args=[message]).start()
 
-
-def mess(message):
-    if chatblacklist(message.chat.id) is True:
-        record = dbstato.find_one({'id': message.from_user.id})
-        old = record['esperienza']
-        bf = gtlvl(old)
-        incrementa_decrementa_stato(message.from_user.first_name, message.from_user.id, "esperienza", "+")
-        rec = dbstato.find_one({'id': message.from_user.id})
-        new = rec['esperienza']
-        aft = gtlvl(new)
-        if (bf < aft):
-            try_to(message,
-                   f"<b>⭐️ {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}")
-        cerca = dbinfo.find_one({'argomento': 'quiza'})
-        if cerca['messa'] + 1 >= cerca['randoma']:
-            dbinfo.find_one_and_update({'argomento': 'quiza'},
-                                       {"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},
-                                       upsert=True)
-            quiz(message)
-        else:
-            dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': cerca['messa'] + 1}}, upsert=True)
 
 
 @bot.callback_query_handler(func=lambda c: c.data == 'primarisposta')
@@ -3151,6 +3128,7 @@ def rispostaprima(call):
                                                                                      call.from_user.id) + "</i>",
                                           call.message.chat.id, call.message.message_id, parse_mode='html')
                     won = random.randint(10, 250)
+                    event_plus(call.from_user.id,call.from_user.first_name, won)
                     bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato! \n 🌟 Hai vinto " + str(
                         won) + " punti esperienza", show_alert=True)
                     info = controlla_e_crea(call.from_user.first_name, call.from_user.id)
@@ -3191,6 +3169,7 @@ def rispostaprima(call):
                     won = random.randint(10, 250)
                     bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato! \n 🌟 Hai vinto " + str(
                         won) + " punti esperienza", show_alert=True)
+                    event_plus(call.from_user.id,call.from_user.first_name, won)
                     info = controlla_e_crea(call.from_user.first_name, call.from_user.id)
                     niu = gtlvl(info['esperienza'])
                     vecc = gtlvl(info['esperienza'] + won)
@@ -3226,6 +3205,7 @@ def rispostaprima(call):
                                                                                      call.from_user.id) + "</i>",
                                           call.message.chat.id, call.message.message_id, parse_mode='html')
                     won = random.randint(10, 250)
+                    event_plus(call.from_user.id,call.from_user.first_name, won)
                     bot.answer_callback_query(call.id, "🏆 Complimenti hai indovinato! \n 🌟 Hai vinto " + str(
                         won) + " punti esperienza", show_alert=True)
                     info = controlla_e_crea(call.from_user.first_name, call.from_user.id)
@@ -3247,6 +3227,106 @@ def rispostaprima(call):
     except Exception as ex:
         salvaerrore(ex)
 
+
+
+
+
+#! Events 
+
+receventuser = client.get_database('events').UserCollection
+receventinfo= client.get_database('events').info 
+def create_new_event(): 
+    titolo = "esperienza"
+    receventinfo.insert_one({ 
+        "title " : titolo,
+        "ttl" : time.time() + 60
+    })
+    bot.send_message(canale_gruppo, f"🏆Nuovo Evento {titolo}")
+    bot.send_message(gruppo, f"🏆Nuovo Evento {titolo}")
+def close_event():
+    ris = receventinfo.find_one({})
+    if ris is not None :
+        classifica = ""
+        i = 0 
+        documents = receventuser.find({}).sort('punti', -1).limit(10)
+        for document in documents : 
+            i = i + 1 
+            classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " + document['punti'] +" ⭐️\n"
+        bot.send_message(canale_gruppo,f"🏆 Vincitori dell'evento {ris['title']} 🏆\n" + classifica ,parse_mode='html') 
+        bot.send_message(gruppo,f"🏆 Vincitori dell'evento {ris['title']} 🏆\n" + classifica ,parse_mode='html') 
+        receventuser.delete_many({})
+        receventinfo.delete_many({})
+        checkevent()
+
+
+def checkevent() : 
+    ris = receventinfo.find({})
+    if receventinfo.count_documents({}) > 1 : 
+        receventinfo.delete_many({}) 
+        create_new_event()
+        return False 
+    elif ris == None : 
+        create_new_event()
+        return False 
+    elif ris != None : 
+        if time.time() > ris['ttl'] : 
+            close_event()
+            return False 
+        else : return True 
+    else : 
+        return True
+
+def event_plus (id,utente,aumento): 
+    if checkevent() : 
+        old = receventuser.find_one({'id':id})
+        if old is None : 
+            receventuser.insert_one({'name': utente, 'id': id, 'punti' : aumento})
+        else : 
+            receventuser.find_one_and_update({'id': id},{"$set": {'name': utente, 'punti': old['punti'] + aumento}},upsert=True)
+        
+    
+
+@bot.edited_message_handler(commands=['evento', 'EVENTO'], chat_types='supergroup')
+@bot.message_handler(commands=['evento', 'EVENTO'], chat_types='supergroup')
+def startrankevneto(message): Thread(target=rankevento, args=[message]).start()
+def rankevento(message): 
+    ris = receventinfo.find_one({})
+    if ris is not None :
+        classifica = ""
+        i = 0 
+        documents = receventuser.find({}).sort('punti', -1).limit(10)
+        for document in documents : 
+            i = i + 1 
+            classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " + document['punti'] +" ⭐️\n"
+            bot.send_message(gruppo,f"🏆 Vincitori dell'evento {ris['title']} 🏆\n" + classifica ,parse_mode='html') 
+
+
+
+@bot.message_handler(content_types=['text'])
+def startmess(message): Thread(target=mess, args=[message]).start()
+
+
+def mess(message):
+    if chatblacklist(message.chat.id) is True:
+        record = dbstato.find_one({'id': message.from_user.id})
+        old = record['esperienza']
+        bf = gtlvl(old)
+        incrementa_decrementa_stato(message.from_user.first_name, message.from_user.id, "esperienza", "+")
+        rec = dbstato.find_one({'id': message.from_user.id})
+        new = rec['esperienza']
+        aft = gtlvl(new)
+        event_plus(message.from_user.id, message.from_user.first_name, 1)
+        if (bf < aft):
+            try_to(message,
+                   f"<b>⭐️ {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}")
+        cerca = dbinfo.find_one({'argomento': 'quiza'})
+        if cerca['messa'] + 1 >= cerca['randoma']:
+            dbinfo.find_one_and_update({'argomento': 'quiza'},
+                                       {"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},
+                                       upsert=True)
+            quiz(message)
+        else:
+            dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': cerca['messa'] + 1}}, upsert=True)
 
 # ! Avvio del bot
 try:
