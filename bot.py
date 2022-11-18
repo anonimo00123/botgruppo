@@ -3260,7 +3260,7 @@ def close_event():
 
 
 def checkevent() : 
-    ris = receventinfo.find({})
+    ris = receventinfo.find_one({})
     if receventinfo.count_documents({}) > 1 : 
         receventinfo.delete_many({}) 
         create_new_event()
@@ -3269,8 +3269,7 @@ def checkevent() :
         create_new_event()
         return False 
     elif ris != None : 
-        b = ris['ttl'] 
-        if time.time() > b: 
+        if time.time() > ris['ttl']: 
             close_event()
             return False 
         else : return True 
