@@ -3291,7 +3291,7 @@ def rankevento(message):
         for document in documents : 
             i = i + 1 
             classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " +str(document['punti']) +" ⭐️\n"
-            bot.send_message(gruppo,f"🏆 Vincitori dell'evento {ris['title']} 🏆\n" + classifica ,parse_mode='html') 
+            bot.send_message(gruppo,f"🏆 Vincitori dell'evento 🏆\n" + classifica ,parse_mode='html') 
 
 
 
