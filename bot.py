@@ -3335,15 +3335,15 @@ def gettime(now, future):
     continua = True
     g = 0
     h = 0
-    m = 0 
+    m = 0
     while continua == True  : 
-        if rimanenti > 86400 : 
+        if rimanenti > 86400.0 : 
             rimanenti = rimanenti - 86400 
             g = g + 1 
-        elif rimanenti > 3600 : 
+        elif rimanenti > 3600.0 : 
             rimanenti = rimanenti - 3600
             h = h + 1
-        elif rimanenti > 60 : 
+        elif rimanenti > 60.0 : 
             rimanenti = rimanenti - 60 
             m = m + 1 
         else: 
