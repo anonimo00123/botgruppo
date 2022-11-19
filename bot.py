@@ -3347,7 +3347,7 @@ def gettime(now, future):
             m = m + 1 
         else: 
             continua = False 
-    return   + str(g) + " Giorni " + str(h) + " ore "+ str(m) + " minuti " + str(round(rimanenti,0)) + " secondi"
+    return   str(g) + " Giorni " + str(h) + " ore "+ str(m) + " minuti " + str(round(rimanenti,0)) + " secondi"
 # ! Avvio del bot
 try:
     bot.infinity_polling()
