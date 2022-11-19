@@ -11,6 +11,7 @@ from pymongo import MongoClient
 from telethon import functions
 from telethon.sync import TelegramClient
 import time
+from datetime import datetime
 
 print('AVVIATO!')
 
@@ -3291,7 +3292,8 @@ def rankevento(message):
         for document in documents : 
             i = i + 1 
             classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " +str(document['punti']) +" ⭐️\n"
-            bot.send_message(gruppo,f"🏆 Vincitori dell'evento 🏆\n" + classifica ,parse_mode='html') 
+
+            bot.send_message(gruppo,f"🏆 Vincitori dell'evento 🏆\n" + classifica + "⏳ <i>"+gettime(time.time(), ris['ttl'])  +"</i>",parse_mode='html') 
 
 
 
@@ -3328,6 +3330,25 @@ def event_plus (id,utente,aumento):
             receventuser.insert_one({'name': utente, 'id': id, 'punti' : aumento})
         else : 
             receventuser.find_one_and_update({'id': id},{"$set": {'name': utente, 'punti': old['punti'] + aumento}},upsert=True)
+def gettime(now, future): 
+    rimanenti = now - future
+    continua = True
+    g = 0
+    h = 0
+    m = 0 
+    while continua == True  : 
+        if rimanenti > 86400 : 
+            rimanenti = rimanenti - 86400 
+            g = g + 1 
+        elif rimanenti > 3600 : 
+            rimanenti = rimanenti - 3600
+            h = h + 1
+        elif rimanenti > 60 : 
+            rimanenti = rimanenti - 60 
+            m = m + 1 
+        else: 
+            continua = False 
+    return str(g) + " Giorni " + str(h) + " ore "+ str(m) + " minuti"
 # ! Avvio del bot
 try:
     bot.infinity_polling()
