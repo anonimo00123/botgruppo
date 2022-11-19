@@ -3242,8 +3242,8 @@ def create_new_event():
         "title " : titolo,
         "ttl" : time.time() + 604800
     })
-    bot.send_message(canale_gruppo, f"🏆Nuovo Evento {titolo}")
-    bot.send_message(gruppo, f"🏆Nuovo Evento {titolo}")
+    bot.send_message(canale_gruppo, f"<b>🏆 Nuovo evento 🏆</b>",parse_mode="html")
+    bot.send_message(gruppo, f"<b>🏆 Nuovo evento 🏆</b>",parse_mode="html")
 def close_event():
     ris = receventinfo.find_one({})
     if ris is not None :
@@ -3253,8 +3253,8 @@ def close_event():
         for document in documents : 
             i = i + 1 
             classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " <code>" +str(document['punti']) +"</code> ⭐️\n"
-        bot.send_message(canale_gruppo,f"<b>🏆 Classifica dell'evento 🏆<b>\n\n" + classifica ,parse_mode='html') 
-        bot.send_message(gruppo,f"<b>🏆 Classifica dell'evento 🏆<b>\n\n" + classifica ,parse_mode='html') 
+        bot.send_message(canale_gruppo,f"<b>🏆 Classifica dell'evento 🏆</b>\n\n" + classifica ,parse_mode='html') 
+        bot.send_message(gruppo,f"<b>🏆 Classifica dell'evento 🏆</b>\n\n" + classifica ,parse_mode='html') 
         receventuser.delete_many({})
         receventinfo.delete_many({})
         checkevent()
@@ -3292,7 +3292,7 @@ def rankevento(message):
         for document in documents : 
             i = i + 1 
             classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " <code>" +str(document['punti']) +"</code> ⭐️\n"
-        bot.send_message(gruppo,f"<b>🏆 Classifica dell'evento 🏆<b>\n\n" + classifica + " \n\n⏳ <i>"+gettime(time.time(), ris['ttl'])  +"</i>",parse_mode='html') 
+        bot.send_message(gruppo,f"<b>🏆 Classifica dell'evento 🏆</b>\n\n" + classifica + " \n\n⏳ <i>"+gettime(time.time(), ris['ttl'])  +"</i>",parse_mode='html') 
 
 
 
