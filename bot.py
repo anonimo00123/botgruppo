@@ -3240,7 +3240,7 @@ def create_new_event():
     titolo = "esperienza"
     receventinfo.insert_one({ 
         "title " : titolo,
-        "ttl" : time.time() + 60
+        "ttl" : time.time() + 604800
     })
     bot.send_message(canale_gruppo, f"🏆Nuovo Evento {titolo}")
     bot.send_message(gruppo, f"🏆Nuovo Evento {titolo}")
@@ -3293,7 +3293,7 @@ def rankevento(message):
             i = i + 1 
             classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " +str(document['punti']) +" ⭐️\n"
 
-            bot.send_message(gruppo,f"🏆 Vincitori dell'evento 🏆\n" + classifica + "⏳ <i>"+gettime(time.time(), ris['ttl'])  +"</i>",parse_mode='html') 
+            bot.send_message(gruppo,f"🏆 Vincitori dell'evento 🏆\n" + classifica + " \n⏳ <i>"+gettime(time.time(), ris['ttl'])  +"</i>",parse_mode='html') 
 
 
 
@@ -3348,7 +3348,7 @@ def gettime(now, future):
             m = m + 1 
         else: 
             continua = False 
-    return str(g) + " Giorni " + str(h) + " ore "+ str(m) + " minuti"
+    return  " \n " + str(g) + " Giorni " + str(h) + " ore "+ str(m) + " minuti" + str(rimanenti) + "secondi"
 # ! Avvio del bot
 try:
     bot.infinity_polling()
