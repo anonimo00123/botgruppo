@@ -3331,7 +3331,7 @@ def event_plus (id,utente,aumento):
         else : 
             receventuser.find_one_and_update({'id': id},{"$set": {'name': utente, 'punti': old['punti'] + aumento}},upsert=True)
 def gettime(now, future): 
-    rimanenti = now - future
+    rimanenti = future - now
     continua = True
     g = 0
     h = 0
