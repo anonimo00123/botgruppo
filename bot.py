@@ -3292,8 +3292,7 @@ def rankevento(message):
         for document in documents : 
             i = i + 1 
             classifica = classifica + str(i)+". "+document['name'].replace('<', '').replace('>', '') + " " +str(document['punti']) +" ⭐️\n"
-
-            bot.send_message(gruppo,f"🏆 Vincitori dell'evento 🏆\n" + classifica + " \n⏳ <i>"+gettime(time.time(), ris['ttl'])  +"</i>",parse_mode='html') 
+            bot.send_message(gruppo,f"🏆 Classifica dell'evento 🏆\n" + classifica + " \n⏳ <i>"+gettime(time.time(), ris['ttl'])  +"</i>",parse_mode='html') 
 
 
 
@@ -3348,7 +3347,7 @@ def gettime(now, future):
             m = m + 1 
         else: 
             continua = False 
-    return  " \n " + str(g) + " Giorni " + str(h) + " ore "+ str(m) + " minuti" + str(rimanenti) + "secondi"
+    return  " \n " + str(g) + " Giorni " + str(h) + " ore "+ str(m) + " minuti" + str(round(rimanenti,0)) + " secondi"
 # ! Avvio del bot
 try:
     bot.infinity_polling()
