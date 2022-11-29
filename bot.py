@@ -1,53 +1,86 @@
-# ! Import
+#! Import delle librerie per far funzionare il bot
+
+#? Librerie matematiche 
 import math
 import random
+
+#? Librerie sconosciute
 from sre_constants import GROUPREF_UNI_IGNORE
+
+#? Libreria per gestire i thread del bot
 from threading import Thread
+
+#? Libreria per fare richieste Api con il bot 
 import requests
+
+#? Libreria che utilizza l'API di Pexels per trovare delle foto
 from pexels_api import API
+
+#? Librerie per gestire il bot 
 from telebot import types
 import telebot
+
+#? Libreria per gestire il DB
 from pymongo import MongoClient
+
+#? Librerie per gestire l'userbot
 from telethon import functions
 from telethon.sync import TelegramClient
+
+#? Librerie per gestire il tempo
 import time
 from datetime import datetime
 
-print('AVVIATO!')
+#! Avviso in console che il bot è stato avviato
+print('! Il bot attualmente è in esecuzione !')
 
+#! Credenziali per accedere ad un userbot 
 api_id = 11029867
 api_hash = '6662f2f9d722cd6ab5263dfa1d53cb0b'
 
+#! Esempio di codice con l'userbot per trovare le info di un utente scelto 
+def ottieniutente(utente: str):
+    with TelegramClient('session_name', api_id, api_hash) as client:
+        result = client(functions.users.GetFullUserRequest(id=utente))
+        print(result.stringify())
+
 # ! Client Mongodb
-client = MongoClient(
-    "mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+client = MongoClient("mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 # ! Bot token
 bot = telebot.TeleBot("5414774013:AAGrm2RFGc1KijttY35ON3WattdBM7RRc7Y")
 
 # ! Variabili globali per la connessione al database
+
+#? Connessione alla tabella della tabella stato
 dbstato = client.get_database("status").stato
+
+#? Tabella per la Registrazione delle info (Da ottimizzare ed utilizzare il meno possibile)
 dbinfo = client.get_database("status").info
+
+#? Tabella che gestisce i ruoli degli utenti es: operatore
 dbruoli = client.get_database("ruoli").ruoliagg
+
+#? Tabella che contiene i quiz del bot
 dbquiz = client.get_database("status").quiz
+
+#? Tabelle che contengono i cognomi e i nomi dei bambini del DB
 db_baby_name = client.get_database("status").babyname
 db_baby_surname = client.get_database("status").babysurname
+
+#? Tabella che contiene l'oroscopo degli utenti nel gruppo 
 dboroscopo = client.get_database("oroscopo").inforoscopo
+
+#? Tabelle che contengono asks e haimai.
 dbhaimai = client.get_database('newhaimai').newhaimaicoll
 dbask = client.get_database('newask').newaskcoll
 dbaskhot = client.get_database('newaskhot').askhotcoll
+
+#? Tabella che serve per gestire gli spoiler nel gruppo (Da ottimizzare con la cancellazione automatica)
 dbspoiler = client.get_database('spoiler').spoilers
 
 
-def ottieniutente(utente: str):
-    with TelegramClient('session_name', api_id, api_hash) as client:
-        result = client(functions.users.GetFullUserRequest(
-            id=utente
-        ))
-        print(result.stringify())
-
-
-# ! FONT
+# ! FONT GENERATOR (Cercare cone si può ottimizzare)
 def getfont(text: str):
     text.replace('Q', '𝐐').replace('W', '𝐖').replace('E', '𝐄').replace('R', '𝐑').replace('T',
 
@@ -79,9 +112,7 @@ def getfont(text: str):
         '<', '<').replace('>', '>')
     return str(text)
 
-    # ! Cerca ruolo
-
-
+# ! Cerca se all'utente a cui hai risposto in chat è concesso il ruolo di operatore
 def cercaoperatore(message):
     trova = dbruoli.find_one({'id': message.reply_to_message.from_user.id, "ruolo": "operatore"})
     if trova is None:
@@ -89,7 +120,7 @@ def cercaoperatore(message):
     else:
         return trova
 
-
+#! Cerca se l'utente che ha mandato il messaggio è concesso il ruolo di operatore
 def cercaoperatoredaid(message):
     trova = dbruoli.find_one({'id': message.from_user.id, "ruolo": "operatore"})
     if trova is None:
@@ -97,7 +128,7 @@ def cercaoperatoredaid(message):
     else:
         return trova
 
-
+#! Cerca se un utente che ha cliccato un bottone è concessco il ruolo di operatore 
 def cercaoperatoredaidcall(iddi):
     trova = dbruoli.find_one({'id': iddi, "ruolo": "operatore"})
     if trova is None:
@@ -106,8 +137,7 @@ def cercaoperatoredaidcall(iddi):
         return trova
 
 
-# ! Gestione errori
-
+# ! Gestioni degli errori (Da ottimizzare riconoscendo le varie eccezioni)
 def salvaerrore(ex):
     try:
         if " A request to the Telegram API was unsuccessful. Error code: 429" in str(ex):
@@ -137,7 +167,7 @@ memory = -1001539169495
 quizzes = []
 
 
-# ! Nuovo uente nello status
+# ! Inserisce un nuovo utente nella tabella delo status
 def nuovo_utente_stato(nome, id):
     try:
         dbstato.insert_one({"id": id, "name": nome, "diamanti": diamanti, "soldi": soldi, "succhini": succhini_iniziali,
@@ -151,7 +181,7 @@ def nuovo_utente_stato(nome, id):
         salvaerrore(ex)
 
 
-# ! Check se esiste
+# ! Controlla se un utente è presente nella tabella dello status e se non lo è richiama nuovo_utente_stato(name,id)
 def controlla_e_crea(nome, id):
     try:
         trova = dbstato.find_one({"id": id})
@@ -167,7 +197,7 @@ def controlla_e_crea(nome, id):
         salvaerrore(ex)
 
 
-# ! Incrementa e decrementa oggetti
+# ! Incrementa e decrementa stato dato un paramentro !Da migliorare! frammentiamo la funzione per migliore chiarezza
 def incrementa_decrementa_stato(nome, id, oggetto, segno):
     try:
         data = controlla_e_crea(nome, id)
@@ -188,7 +218,7 @@ def incrementa_decrementa_stato(nome, id, oggetto, segno):
         salvaerrore(ex)
 
 
-# ! Save info stato
+# ! Funzione che salva gli elementi della tabella like e dislikes (Migliora nomencaltura della funzione)
 def save_info_stato(nome, argomento, da, a, daname, segno):
     try:
         dbinfo.insert_one({'argomento': argomento, "da": da, "a": a, "aname": nome, "daname": daname})
@@ -211,8 +241,7 @@ def save_info_stato(nome, argomento, da, a, daname, segno):
         salvaerrore(ex)
 
 
-# ! try to answer
-
+# ! Prova a rispondere ad un messaggio di un utente e se non riesce manda normalmente senza rispondere
 def try_to(message, text):
     try:
         bot.reply_to(message, text, parse_mode="html")
@@ -222,11 +251,11 @@ def try_to(message, text):
         except Exception as ex:
             salvaerrore(ex)
 
-
+            
+#! Cerca se una chat è autorizzata ad utilizzare il bot (Da migliorare la struttura dati)
 def chatblacklist(chat: str):
     verifica = str(chat)
-    if verifica[
-        0] == '-' and chat != gruppo and chat != canale_artehub and chat != canale_gruppo and chat != canale_log and chat != -691548571 and chat != -1001599554760:
+    if verifica[0] == '-' and chat != gruppo and chat != canale_artehub and chat != canale_gruppo and chat != canale_log and chat != -691548571 and chat != -1001599554760:
         bot.send_photo(chat, photo='https://telegra.ph/file/b6b04fe523e57d367326e.jpg',
                        caption='𝐂𝐡𝐚𝐭 𝐧𝐨𝐧 𝐚𝐮𝐭𝐨𝐫𝐢𝐳𝐳𝐚𝐭𝐚 ❌')
         bot.leave_chat(chat)
@@ -235,8 +264,7 @@ def chatblacklist(chat: str):
         return True
 
 
-# ! try to answer
-
+#! Ha la stessa funzionalità della funzione try_to a riga 248 o giù di li ma senza parse mode
 def try_to_two(message, text):
     try:
         bot.reply_to(message, text)
@@ -247,63 +275,47 @@ def try_to_two(message, text):
             salvaerrore(ex)
 
 
-# ! Message id inesistente
-
+# ! Verifica se hai risposto realmente ad un utente per eseguire un comando tipo /operatore
 def verifica_esistenza(message):
     try:
         return message.reply_to_message.from_user.id
     except:
         return False
 
-    # ! Adatta i nomi al linguaggio html
-
-
+    
+# ! Manda il testo già formattato per la menzione degli utenti
 def namechanger(name, id):
-    return "<a href='tg://user?id=" + str(id) + "'>" + str(
-        name.replace('<', "").replace(">", "").replace("$", "")) + "</a>"
+    return "<a href='tg://user?id=" + str(id) + "'>" + str(name.replace('<', "").replace(">", "").replace("$", "")) + "</a>"
 
 
-# ! Comandi /cmd
-# stato
-# * Comando unrispetto /unrispetto al messaggio di un utente
-
-
+#! Togli un punto di rispetto della tabella dei rispetti (Multithread fun)
 @bot.edited_message_handler(commands=['unrispetto', 'UNRISPETTO'], chat_types='supergroup')
 @bot.message_handler(commands=['unrispetto', 'UNRISPETTO'], chat_types='supergroup')
 def startunrispett(message): Thread(target=unrispetto, args=[message]).start()
-
-
 def unrispetto(message):
     try:
         if chatblacklist(message.chat.id) is True:
+            #? Controlla se l'utente è un amministratore 
             if str(bot.get_chat_member(message.chat.id, message.from_user.id).status) == "administrator":
+                #? l'amministratore ha risposto al messaggio dell'utente a cui vuole togliere un punto di rispetto?
                 if verifica_esistenza(message) == False:
-                    bot.send_message(message.chat.id,
-                                     "𝗥𝗶𝘀𝗽𝗼𝗻𝗱𝗶 𝗮𝗱 𝘂𝗻 𝘂𝘁𝗲𝗻𝘁𝗲 ✍️ \n 💬 »  <i>Ricordati di rispondere all'utente a cui vuoi togliere il punto rispetto</i>",
-                                     parse_mode="html")
-
+                    bot.send_message(message.chat.id,"𝗥𝗶𝘀𝗽𝗼𝗻𝗱𝗶 𝗮𝗱 𝘂𝗻 𝘂𝘁𝗲𝗻𝘁𝗲 ✍️ \n 💬 »  <i>Ricordati di rispondere all'utente a cui vuoi togliere il punto rispetto</i>",parse_mode="html")
+                #? L'amministratore sta rispettando se stesso? 
                 elif message.from_user.id == message.reply_to_message.from_user.id:
                     try_to(message, "<i>🛠» Non puoi unrispettare te stesso </i>")
                 else:
-                    save_info_stato(message.reply_to_message.from_user.first_name, "rispetto", message.from_user.id,
-                                    message.reply_to_message.from_user.id, message.from_user.first_name, "-")
-                    bot.send_message(message.chat.id, "😡 𝗠𝗮𝗻𝗻𝗮𝗴𝗴𝗶𝗮 » <i> " + namechanger(
-                        message.reply_to_message.from_user.first_name,
-                        message.reply_to_message.from_user.id) + " Ti hanno tolto un punto di rispetto</i>",
-                                     parse_mode="html")
+                    #? Decrementa il valore rispetto della tabella status 
+                    save_info_stato(message.reply_to_message.from_user.first_name, "rispetto", message.from_user.id,message.reply_to_message.from_user.id, message.from_user.first_name, "-")
+                    bot.send_message(message.chat.id, "😡 𝗠𝗮𝗻𝗻𝗮𝗴𝗴𝗶𝗮 » <i> " + namechanger(message.reply_to_message.from_user.first_name,message.reply_to_message.from_user.id) + " Ti hanno tolto un punto di rispetto</i>",parse_mode="html")
     except Exception as ex:
         salvaerrore(ex)
 
-
-# ^ get user
 
 # * Comando di rispetto /rispetto al messaggio di un utente
 
 @bot.edited_message_handler(commands=['rispetto', 'RISPETTO'], chat_types='supergroup')
 @bot.message_handler(commands=['rispetto', 'RISPETTO'], chat_types='supergroup')
 def startrispetto(message): Thread(target=rispetto, args=[message]).start()
-
-
 def rispetto(message):
     try:
         if chatblacklist(message.chat.id) is True:
