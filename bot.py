@@ -644,37 +644,6 @@ def arresta(message):
         salvaerrore(ex)
 
 
-# * Omofobometro
-@bot.edited_message_handler(commands=['omofobometro', 'OMOFOBOMETRO'], chat_types='supergroup')
-@bot.message_handler(commands=['omofobometro', 'OMOFOBOMETRO'], chat_types='supergroup')
-def startomofobometro(message): Thread(target=omofobometro, args=[message]).start()
-
-
-def omofobometro(message):
-    try:
-        if chatblacklist(message.chat.id) is True:
-            try_to(message,
-                   "🎲 »<i> " + namechanger(message.from_user.first_name, message.from_user.id) + " è omofobo al " + str(
-                       random.randint(0, 100)) + " % 🏳️‍🌈⃠</i>")
-    except Exception as ex:
-        salvaerrore(ex)
-
-
-# * Nazimometro
-
-@bot.edited_message_handler(commands=['nazimometro', 'NAZIMOMETRO'], chat_types='supergroup')
-@bot.message_handler(commands=['nazimometro', 'NAZIMOMETRO'], chat_types='supergroup')
-def startnazimometro(message): Thread(target=nazimometro, args=[message]).start()
-
-
-def nazimometro(message):
-    try:
-        if chatblacklist(message.chat.id) is True:
-            try_to(message,
-                   "🎲 »<i> " + namechanger(message.from_user.first_name, message.from_user.id) + " è nazista al " + str(
-                       random.randint(0, 100)) + " % 🔥</i>")
-    except Exception as ex:
-        salvaerrore(ex)
 
 
 # * oroscopo
@@ -745,54 +714,6 @@ def ori(message):
         salvaerrore(ex)
 
 
-# * bagasciamometro
-@bot.edited_message_handler(commands=['bagasciamometro', 'BAGASCIAMOMETRO'], chat_types='supergroup')
-@bot.message_handler(commands=['bagasciamometro', 'BAGASCIAMOMETRO'], chat_types='supergroup')
-def startbagasciamometro(message): Thread(target=bagasciamometro, args=[message]).start()
-
-
-def bagasciamometro(message):
-    try:
-        if chatblacklist(message.chat.id) is True:
-            try_to(message,
-                   "🎲 »<i> " + namechanger(message.from_user.first_name,
-                                           message.from_user.id) + " è bagascia al " + str(
-                       random.randint(0, 100)) + " % 🙇‍♀️</i>")
-    except Exception as ex:
-        salvaerrore(ex)
-    # * Maranzamometro
-
-
-@bot.edited_message_handler(commands=['maranzamometro', 'MARANZAMOMETRO'], chat_types='supergroup')
-@bot.message_handler(commands=['maranzamometro', 'MARANZAMOMETRO'], chat_types='supergroup')
-def startmaranzamometro(message): Thread(target=maranzamometro, args=[message]).start()
-
-
-def maranzamometro(message):
-    try:
-        if chatblacklist(message.chat.id) is True:
-            try_to(message,
-                   "🎲 »<i> " + namechanger(message.from_user.first_name, message.from_user.id) + " è maranza al " + str(
-                       random.randint(0, 100)) + " % 🥷</i>")
-    except Exception as ex:
-        salvaerrore(ex)
-
-
-# * Infamometro
-
-@bot.edited_message_handler(commands=['infamometro', 'INFAMOMETRO'], chat_types='supergroup')
-@bot.message_handler(commands=['infamometro', 'INFAMOMETRO'], chat_types='supergroup')
-def startoinfamometro(message): Thread(target=infamometro, args=[message]).start()
-
-
-def infamometro(message):
-    try:
-        if chatblacklist(message.chat.id) is True:
-            try_to(message,
-                   "🎲 »<i> " + namechanger(message.from_user.first_name, message.from_user.id) + " è infame al " + str(
-                       random.randint(0, 100)) + " % 👿</i>")
-    except Exception as ex:
-        salvaerrore(ex)
 
 
 @bot.message_handler(commands=['ritardometro', 'RITARDOMETRO'], chat_types='supergroup')
