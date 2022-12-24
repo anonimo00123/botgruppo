@@ -3296,6 +3296,53 @@ def rankevento(message):
 
 
 
+
+@bot.edited_message_handler(commands=['settings', 'SETTINGS'], chat_types='supergroup')
+@bot.message_handler(commands=['settings', 'SETTINGS'], chat_types='supergroup')
+def startsettings(message): Thread(target=settings, args=[message]).start()
+def settings(message): 
+    try: 
+        if message.from_user.id == proprietario : 
+            impost = types.InlineKeyboardMarkup()
+            cerca = dbLocalVariables.find_one({'id':1})
+            if cerca['AutoJoinRequests'] : 
+                disattiva = types.InlineKeyboardButton(text="Attivata ✅", callback_data="disattivaAutoJoin")
+                impost.add(disattiva)
+            else: 
+                attiva = types.InlineKeyboardButton(text="Disattivata ❌", callback_data="attivaAutoJoin")
+                impost.add(attiva)
+            bot.send_message(message.chat.id, "<b>⚙️ Impostazioni del gruppo</b>", parse_mode="html", reply_markup=impost)
+    except Exception as ex :
+        salvaerrore(ex)
+@bot.callback_query_handler(func=lambda c: c.data == 'disattivaAutoJoin')
+def delask(call):
+    if call.from_user.id == proprietario : 
+        cerca = dbLocalVariables.find_one({'id': 1})
+        if cerca['AutoJoinRequests'] : 
+            dbLocalVariables.find_one_and_update({'id': 1}, {"$set": {"AutoJoinRequests": False}}, upsert=True)
+            impost = types.InlineKeyboardMarkup()
+            attiva = types.InlineKeyboardButton(text="Disattivata ❌", callback_data="attivaAutoJoin")
+            impost.add(attiva)
+            bot.edit_message_reply_markup(gruppo, call.message.message_id, reply_markup=impost)
+
+@bot.callback_query_handler(func=lambda c: c.data == 'attivaAutoJoin')
+def delask(call):
+    if call.from_user.id == proprietario : 
+        cerca = dbLocalVariables.find_one({'id': 1})
+        if cerca['AutoJoinRequests'] == False : 
+            dbLocalVariables.find_one_and_update({'id': 1}, {"$set": {"AutoJoinRequests": True}}, upsert=True)
+            impost = types.InlineKeyboardMarkup()
+            disattiva = types.InlineKeyboardButton(text="Attivata ✅", callback_data="disattivaAutoJoin")
+            impost.add(disattiva)
+            bot.edit_message_reply_markup(gruppo, call.message.message_id, reply_markup=impost)
+
+
+
+
+
+
+
+
 @bot.message_handler(content_types=['text'])
 def startmess(message): Thread(target=mess, args=[message]).start()
 
@@ -3350,48 +3397,8 @@ def gettime(now, future):
     return   str(g) + " Giorni " + str(h) + " ore "+ str(m) + " minuti " + str(round(rimanenti,0)) + " secondi"
 
 
-@bot.edited_message_handler(commands=['settings', 'SETTINGS'], chat_types='supergroup')
-@bot.message_handler(commands=['settings', 'SETTINGS'], chat_types='supergroup')
-def startsettings(message): Thread(target=settings, args=[message]).start()
-def settings(message): 
-    try: 
-        if message.from_user.id == proprietario : 
-            impost = types.InlineKeyboardMarkup()
-            cerca = dbLocalVariables.find_one({'id':1})
-            if cerca['AutoJoinRequests'] : 
-                disattiva = types.InlineKeyboardButton(text="Attivata ✅", callback_data="disattivaAutoJoin")
-                impost.add(disattiva)
-            else: 
-                attiva = types.InlineKeyboardButton(text="Disattivata ❌", callback_data="attivaAutoJoin")
-                impost.add(attiva)
-            bot.send_message(message.chat.id, "<b>⚙️ Impostazioni del gruppo</b>", parse_mode="html", reply_markup=impost)
-    except Exception as ex :
-        salvaerrore(ex)
-@bot.callback_query_handler(func=lambda c: c.data == 'disattivaAutoJoin')
-def delask(call):
-    if call.from_user.id == proprietario : 
-        cerca = dbLocalVariables.find_one({'id': 1})
-        if cerca['AutoJoinRequests'] : 
-            dbLocalVariables.find_one_and_update({'id': 1}, {"$set": {"AutoJoinRequests": False}}, upsert=True)
-            impost = types.InlineKeyboardMarkup()
-            attiva = types.InlineKeyboardButton(text="Disattivata ❌", callback_data="attivaAutoJoin")
-            impost.add(attiva)
-            bot.edit_message_reply_markup(gruppo, call.message.message_id, reply_markup=impost)
 
-    return 0 
-
-@bot.callback_query_handler(func=lambda c: c.data == 'attivaAutoJoin')
-def delask(call):
-    if call.from_user.id == proprietario : 
-        cerca = dbLocalVariables.find_one({'id': 1})
-        if cerca['AutoJoinRequests'] == False : 
-            dbLocalVariables.find_one_and_update({'id': 1}, {"$set": {"AutoJoinRequests": True}}, upsert=True)
-            impost = types.InlineKeyboardMarkup()
-            disattiva = types.InlineKeyboardButton(text="Attivata ✅", callback_data="disattivaAutoJoin")
-            impost.add(disattiva)
-            bot.edit_message_reply_markup(gruppo, call.message.message_id, reply_markup=impost)
          
-    return 0 
 
 # ! Avvio del bot
 try:
