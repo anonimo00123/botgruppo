@@ -3306,10 +3306,10 @@ def settings(message):
             impost = types.InlineKeyboardMarkup()
             cerca = dbLocalVariables.find_one({'id':1})
             if cerca['AutoJoinRequests'] : 
-                disattiva = types.InlineKeyboardButton(text="Attivata ✅", callback_data="disattivaAutoJoin")
+                disattiva = types.InlineKeyboardButton(text="Accettazione membri automatica ✅", callback_data="disattivaAutoJoin")
                 impost.add(disattiva)
             else: 
-                attiva = types.InlineKeyboardButton(text="Disattivata ❌", callback_data="attivaAutoJoin")
+                attiva = types.InlineKeyboardButton(text="Accettazione membri automatica ❌", callback_data="attivaAutoJoin")
                 impost.add(attiva)
             bot.send_message(message.chat.id, "<b>⚙️ Impostazioni del gruppo</b>", parse_mode="html", reply_markup=impost)
     except Exception as ex :
