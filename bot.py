@@ -3321,7 +3321,7 @@ def delask(call):
         if cerca['AutoJoinRequests'] : 
             dbLocalVariables.find_one_and_update({'id': 1}, {"$set": {"AutoJoinRequests": False}}, upsert=True)
             impost = types.InlineKeyboardMarkup()
-            attiva = types.InlineKeyboardButton(text="Disattivata ❌", callback_data="attivaAutoJoin")
+            attiva = types.InlineKeyboardButton(text="Accettazione membri automatica ❌", callback_data="attivaAutoJoin")
             impost.add(attiva)
             bot.edit_message_reply_markup(gruppo, call.message.message_id, reply_markup=impost)
 
@@ -3332,7 +3332,7 @@ def delask(call):
         if cerca['AutoJoinRequests'] == False : 
             dbLocalVariables.find_one_and_update({'id': 1}, {"$set": {"AutoJoinRequests": True}}, upsert=True)
             impost = types.InlineKeyboardMarkup()
-            disattiva = types.InlineKeyboardButton(text="Attivata ✅", callback_data="disattivaAutoJoin")
+            disattiva = types.InlineKeyboardButton(text="Accettazione membri automatica ✅", callback_data="disattivaAutoJoin")
             impost.add(disattiva)
             bot.edit_message_reply_markup(gruppo, call.message.message_id, reply_markup=impost)
 
