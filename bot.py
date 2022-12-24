@@ -2583,14 +2583,10 @@ def accettazione(message):
         bot.send_video(message.from_user.id, open('sending.mp4', 'rb'),
                        caption='𝙍𝙞𝙘𝙝𝙞𝙚𝙨𝙩𝙖 𝙖 𝙂𝙧𝙪𝙥𝙥𝙤 𝙞𝙩𝙖 𝙞𝙣𝙫𝙞𝙖𝙩𝙖 📫\n\n❌ 𝐍𝐨 𝐝𝐜 𝟏 (𝐕𝐨𝐈𝐏)\n\n⏳ 𝐒𝐞 𝐧𝐨𝐧 𝐡𝐚𝐢 𝐥𝐚 𝐩𝐢𝐜 𝐝𝐞𝐯𝐢 𝐚𝐭𝐭𝐞𝐧𝐝𝐞𝐫𝐞 𝐚𝐜𝐜𝐞𝐭𝐭𝐚𝐳𝐢𝐨𝐧𝐞 𝐝𝐚𝐠𝐥𝐢 𝐚𝐝𝐦𝐢𝐧',
                        parse_mode='html')
-
-        if int(bot.get_user_profile_photos(message.from_user.id).total_count > 0):
+        cerca = dbLocalVariables.find_one({'id': 1})
+        if int(bot.get_user_profile_photos(message.from_user.id).total_count > 0 and cerca['AutoJoinRequests']):
             bot.approve_chat_join_request(gruppo, message.from_user.id)
-            bot.send_message(canale_log,
-                             "#UTENTECERCADIENTRARE \n <b>•Di: </b>" + namechanger(message.from_user.first_name,
-                                                                                   message.from_user.id) + " [<code>" + str(
-                                 message.from_user.id) + "</code>]" + "\n <i>Utente approvato automaticamente 🤖</i>",
-                             parse_mode='html')
+            bot.send_message(canale_log,"#UTENTECERCADIENTRARE \n <b>•Di: </b>" + namechanger(message.from_user.first_name,message.from_user.id) + " [<code>" + str(message.from_user.id) + "</code>]" + "\n <i>Utente approvato automaticamente 🤖</i>",parse_mode='html')
             tastiera = types.InlineKeyboardMarkup()
             regole = types.InlineKeyboardButton(text='Regole 🚔', callback_data='regole')
             tastiera.add(regole)
