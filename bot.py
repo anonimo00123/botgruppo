@@ -31,6 +31,10 @@ from telethon.sync import TelegramClient
 import time
 from datetime import datetime
 
+#? Import per l'intelligenza artificiale
+import openai
+import os
+
 #! Avviso in console che il bot è stato avviato
 print('! Il bot attualmente è in esecuzione !')
 
@@ -452,7 +456,22 @@ def askhot(message):
                     random.randint(1, dbaskhot.count_documents({}))).next()['askhot'])
             except Exception as ex:
                 salvaerrore(ex)
-
+#* Intelligenza artificiale 
+# * addask
+@bot.edited_message_handler(regexp='hey robotita', chat_types='supergroup')
+@bot.edited_message_handler(regexp='HEY ROBOTITA', chat_types='supergroup')
+@bot.message_handler(regexp='hey robotita', chat_types='supergroup')
+@bot.message_handler(regexp='HEY ROBOTITA', chat_types='supergroup')
+def starta(message) : Thread (target=ai, args=[message]).start()
+def ai (message) : 
+    try: 
+        print('ciao')
+        openai.api_key = "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"
+        richiesta = message.text[13:len(message.text)]
+        response = openai.Completion.create(model="text-davinci-002", prompt=richiesta, temperature=0, max_tokens=10)
+        bot.send_message(gruppo, f"<code>{response.choices[0].text}</code>", parse_mode="html")
+    except Exception as ex : 
+        salvaerrore(ex)
 
 # * addask
 @bot.edited_message_handler(regexp='/addask', chat_types='supergroup')
