@@ -68,6 +68,9 @@ dbruoli = client.get_database("ruoli").ruoliagg
 #? Tabella che contiene i quiz del bot
 dbquiz = client.get_database("status").quiz
 
+#? Tabella che contiene i dadi lanciati dal bot
+dbdadi = client.get_database("status").dadi
+
 #? Tabelle che contengono i cognomi e i nomi dei bambini del DB
 db_baby_name = client.get_database("status").babyname
 db_baby_surname = client.get_database("status").babysurname
@@ -172,6 +175,7 @@ canale_artehub = -1001568212776
 canale_log = -1001609514626
 memory = -1001539169495
 quizzes = []
+arrdadi  = []
 
 
 # ! Inserisce un nuovo utente nella tabella delo status
@@ -3351,11 +3355,45 @@ def delask(call):
             impost.add(disattiva)
             bot.edit_message_reply_markup(gruppo, call.message.message_id, reply_markup=impost)
 
+def dadi(message): 
+    tastiera = types.InlineKeyboardMarkup()
+    BtnLancia = types.InlineKeyboardButton(text='Lancia un dado 🎲', callback_data='dadolanciato')
+    tastiera.add(BtnLancia)
+    lanciato = bot.send_dice(message.chat.id,"🎲", reply_markup=tastiera)
+    arrdadi.append(lanciato.message_id)
+    dbdadi.insert_one({'message_id': lanciato.message_id, 'numero': lanciato.dice.value})
 
+@bot.callback_query_handler(func=lambda c: c.data == 'dadolanciato')
+def DadoLanciato(call):
+    if arrdadi.count(call.message.message_id) == 0 : 
+        bot.answer_callback_query(call.id, "❌ » Hanno già lanciato il dado prima di te ", show_alert=True)
+    else: 
+        arrdadi.remove(call.message.message_id)
+        bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
+        cerca = dbdadi.find_one({'message_id': call.message.message_id})
+        lancio_utente = bot.send_dice(call.message.chat.id ,"🎲" )
+        if lancio_utente.dice.value > cerca['numero'] : 
+            cerca = dbstato.find_one({'id': call.from_user.id})
+            old = cerca['esperienza']
+            new  = cerca['esperienza'] + 250
+            dbstato.find_one_and_update({'id': call.from_user.id},{"$set": {'esperienza': new}},upsert=True)
+            bot.send_message(call.message.chat.id, f'{namechanger(call.from_user.first_name, call.from_user.id)} complimenti hai battuto il bot 🏆, hai vinto 250 punti esperienza ⭐️  ', reply_to_message_id=lancio_utente.message_id, parse_mode='html')
+        elif lancio_utente.dice.value ==  cerca['numero']   : 
+            cerca = dbstato.find_one({'id': call.from_user.id})
+            old = cerca['esperienza']
+            new  = cerca['esperienza'] + 100
+            dbstato.find_one_and_update({'id': call.from_user.id},{"$set": {'esperienza': new}},upsert=True)
+            bot.send_message(call.message.chat.id, f'{namechanger(call.from_user.first_name, call.from_user.id)} Hai fatto lo stesso numero del bot 🏆, ma ti diamo 100 punti esperienza ⭐️  ', reply_to_message_id=lancio_utente.message_id, parse_mode='html')
+        else : 
+            cerca = dbstato.find_one({'id': call.from_user.id})
+            old = cerca['esperienza']
+            new  = cerca['esperienza'] + 25
+            dbstato.find_one_and_update({'id': call.from_user.id},{"$set": {'esperienza': new}},upsert=True)
+            bot.send_message(call.message.chat.id, f'{namechanger(call.from_user.first_name, call.from_user.id)} hai perso contro il bot🏆, Ma ti diamo comunque 25 punti esperienza ⭐️  ', reply_to_message_id=lancio_utente.message_id, parse_mode='html')
+        if gtlvl(new) > gtlvl(old) : 
+            bot.send_message(call.message.chat.id,f"<b>⭐️ {namechanger(call.from_user.first_name, call.from_user.id)} hai raggiunto il livello {gtlvl(new)}</b>",parse_mode='html')
 
-
-
-
+    
 
 
 @bot.message_handler(content_types=['text'])
@@ -3373,14 +3411,15 @@ def mess(message):
         aft = gtlvl(new)
         event_plus(message.from_user.id, message.from_user.first_name, 1)
         if (bf < aft):
-            try_to(message,
-                   f"<b>⭐️ {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}")
+            try_to(message,f"<b>⭐️ {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}")
         cerca = dbinfo.find_one({'argomento': 'quiza'})
-        if cerca['messa'] + 1 >= cerca['randoma']:
-            dbinfo.find_one_and_update({'argomento': 'quiza'},
-                                       {"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},
-                                       upsert=True)
-            quiz(message)
+
+        if cerca['messa'] + 1 >= cerca['randoma']  :
+            dbinfo.find_one_and_update({'argomento': 'quiza'},{"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},upsert=True)
+            if random.randint(0,1) : 
+                quiz(message)
+            else : 
+                dadi(message)
         else:
             dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': cerca['messa'] + 1}}, upsert=True)
 
