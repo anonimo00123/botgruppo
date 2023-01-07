@@ -35,6 +35,13 @@ from datetime import datetime
 import openai
 import os
 
+#? cerca da Youtube
+from youtube_search import YoutubeSearch
+
+#? Scarica da youtube 
+import pytube
+from pytube import YouTube
+
 #! Avviso in console che il bot è stato avviato
 print('! Il bot attualmente è in esecuzione !')
 
@@ -460,6 +467,7 @@ def askhot(message):
                     random.randint(1, dbaskhot.count_documents({}))).next()['askhot'])
             except Exception as ex:
                 salvaerrore(ex)
+
 #* Intelligenza artificiale 
 # * addask
 @bot.edited_message_handler(regexp='hey robotita', chat_types='supergroup')
@@ -476,6 +484,285 @@ def ai (message) :
         bot.send_message(gruppo, f"<code>{response.choices[0].text}</code>", parse_mode="html")
     except Exception as ex : 
         salvaerrore(ex)
+#1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟
+dbsearch = client.get_database('Canz').search 
+@bot.edited_message_handler(regexp='/canzone', chat_types='supergroup')
+@bot.edited_message_handler(regexp='/CANZONE', chat_types='supergroup')
+@bot.message_handler(regexp='/canzone', chat_types='supergroup')
+@bot.message_handler(regexp='/CANZONE', chat_types='supergroup')
+def canzone(message): 
+    if chatblacklist(message.chat.id) is True : 
+        contenuto = verifysecond(message, 'canzone')
+        if contenuto == 'false': 
+            nontrovato(message, '/canzone [titolo]')
+        else : 
+            canzoni = {}
+            results = YoutubeSearch(contenuto, max_results=10).to_dict()
+            if len(results) != 10  : 
+                bot.send_message(message.chat.id, f"🎸 » Nessun risultato per {contenuto}")
+            else : 
+                gt_results_string = f"<b>🔎 Risultati per {contenuto}</b>\n\n"
+                for i in range(0, len(results)) :
+                    canzoni.update({f"{i}": results[i]['id']})
+                    print(results[i]['id'])
+                    gt_results_string = gt_results_string + "\n"+str(i+1)+". " + results[i]['title'] + '\n'
+                tastiera = types.InlineKeyboardMarkup()
+                print(results)
+                print(len(results))
+                primo = types.InlineKeyboardButton(text='1️⃣', callback_data='scaricaprimo')
+                secondo =  types.InlineKeyboardButton(text='2️⃣', callback_data='scaricasecondo')
+                terzo =  types.InlineKeyboardButton(text='3️⃣', callback_data='scaricaterzo')
+                quarto =  types.InlineKeyboardButton(text='4️⃣', callback_data='scaricaquarto')
+                quinto =  types.InlineKeyboardButton(text='5️⃣', callback_data='scaricaquinto')
+                sesto =  types.InlineKeyboardButton(text='6️⃣', callback_data='scaricasesto')
+                settimo =  types.InlineKeyboardButton(text='7️⃣', callback_data='scaricasettimo')
+                ottavo =  types.InlineKeyboardButton(text='8️⃣', callback_data='scaricaottavo')
+                nono =  types.InlineKeyboardButton(text='9️⃣', callback_data='scaricanono')
+                decimo =  types.InlineKeyboardButton(text='🔟', callback_data='scaricadecimo')
+                tastiera.add(primo,secondo,terzo,quarto,quinto,sesto,settimo,ottavo,nono,decimo)
+
+
+                    
+                mess = bot.send_message(message.chat.id, gt_results_string, parse_mode='html', reply_markup=tastiera)
+                canzoni.update({'key' : mess.message_id })
+                dbsearch.insert_one(canzoni)
+
+        
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricaprimo')
+def scarica(call):
+    print('dentro')
+    print(call.message.message_id)
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['0']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['0']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricasecondo')
+def scarica(call):
+
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['1']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['1']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricaterzo')
+def scarica(call):
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['2']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['2']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricaquarto')
+def scarica(call):
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['3']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['3']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricaquinto')
+def scarica(call):
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['4']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['4']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricasesto')
+def scarica(call):
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['5']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['5']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricasettimo')
+def scarica(call):
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['6']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['6']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricaottavo')
+def scarica(call):
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['7']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['7']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricanono')
+def scarica(call):
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['8']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['8']).streams.filter(only_audio=True).first()
+            print(video.itag)
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+@bot.callback_query_handler(func=lambda c: c.data == 'scaricadecimo')
+def scarica(call):
+    cerca = dbsearch.find_one({'key' : call.message.message_id})
+    if cerca != None : 
+        results = YoutubeSearch(f"https://youtu.be/{cerca['1']}", max_results=1).to_dict() 
+        print(results)
+        print(results[0]['duration'])
+        duration = results[0]['duration']
+        if len(duration) > 5  : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti',show_alert=True)
+        elif len(duration) == 5 and int(duration[0]) > 2 : 
+            bot.answer_callback_query(call.id, '⚠️ la canzone non può durare oltre i 29 minuti', show_alert=True )
+        else : 
+            video = pytube.YouTube("https://youtu.be/"+cerca['9']).streams.filter(only_audio=True).first()
+            out_file = video.download()
+            # save the file
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file) 
+            bot.send_document(call.message.chat.id, open(new_file, 'rb'))
+            os.remove(new_file)
+            print('fatto')
+
+
 
 # * addask
 @bot.edited_message_handler(regexp='/addask', chat_types='supergroup')
