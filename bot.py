@@ -2903,7 +2903,7 @@ def accettazione(message):
             canale = types.InlineKeyboardButton(text='Canale 🧸', url='https://t.me/canale_gruppoita')
             inno = types.InlineKeyboardButton(text=' Inno 🎸', url='https://t.me/canale_gruppoita/388')
             tastiera.add(canale, inno)
-            chatta = types.InlineKeyboardButton(text='Inizia a chattare 💬', url='https://t.me/+8wk5E8JndRM4N2Ux')
+            chatta = types.InlineKeyboardButton(text='Inizia a chattare 💬', url='https://t.me/+UvXiPXilfOcxZDQx')
             tastiera.add(chatta)
             bot.send_video(message.from_user.id,  open('video.mp4', 'rb') , caption=namechanger(message.from_user.first_name,message.from_user.id) + " <i>Benvenuto su Gruppo ita comportati bene 😊</i>",reply_markup=tastiera, parse_mode='html')
             bot.send_message(gruppo, "<i>Date il benvenuto a </i> " + str(
