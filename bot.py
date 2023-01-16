@@ -2905,10 +2905,7 @@ def accettazione(message):
             tastiera.add(canale, inno)
             chatta = types.InlineKeyboardButton(text='Inizia a chattare 💬', url='https://t.me/+8wk5E8JndRM4N2Ux')
             tastiera.add(chatta)
-            bot.send_photo(message.from_user.id, 'https://telegra.ph/file/7b9242b74ff493f7ceecf.jpg',
-                           caption=namechanger(message.from_user.first_name,
-                                               message.from_user.id) + " <i>Benvenuto su Gruppo ita comportati bene 😊</i>",
-                           reply_markup=tastiera, parse_mode='html')
+            bot.send_video(message.from_user.id,  open('video.mp4', 'rb') , caption=namechanger(message.from_user.first_name,message.from_user.id) + " <i>Benvenuto su Gruppo ita comportati bene 😊</i>",reply_markup=tastiera, parse_mode='html')
             bot.send_message(gruppo, "<i>Date il benvenuto a </i> " + str(
                 namechanger(message.from_user.first_name, message.from_user.id)) + " 🥳\n<i>è il " + str(
                 bot.get_chat_member_count(gruppo)) + "° membro del gruppo</i>", parse_mode='html')
