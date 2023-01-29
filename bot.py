@@ -3035,7 +3035,7 @@ def accetto(call):
                 bot.send_message(gruppo, "<i>Date il benvenuto a </i> " + str(
                     namechanger(trova['nome'], trova['utente'])) + " 🥳\n<i>è il " + str(
                     bot.get_chat_member_count(gruppo)) + "° membro del gruppo</i>", parse_mode='html')
-                bot.send_photo(trova['utente'], 'https://telegra.ph/file/7b9242b74ff493f7ceecf.jpg',
+                bot.send_video(trova['utente'], open('video.mp4', 'rb') ,
                                caption=" <i>Benvenuto su Gruppo ita comportati bene 😊</i>", reply_markup=tastiera,
                                parse_mode='html')
                 dbinfo.delete_many({'argomento': 'accettazione', 'utente': trova['utente']})
@@ -3061,9 +3061,10 @@ def accetto(call):
                 bot.send_message(gruppo, "<i>Date il benvenuto a </i> " + str(
                     namechanger(group['nome'], group['utente'])) + " 🥳\n<i>è il " + str(
                     bot.get_chat_member_count(gruppo)) + "° membro del gruppo</i>", parse_mode='html')
-                bot.send_photo(group['utente'], 'https://telegra.ph/file/7b9242b74ff493f7ceecf.jpg',
+                bot.send_video(group['utente'], open('video.mp4', 'rb') ,
                                caption=" <i>Benvenuto su Gruppo ita comportati bene 😊</i>", reply_markup=tastiera,
                                parse_mode='html')
+                
                 dbinfo.delete_many({'argomento': 'accettazione', 'utente': trova['utente']})
             else:
                 bot.answer_callback_query(call.id, "👥 » utente non trovato", show_alert=True)
