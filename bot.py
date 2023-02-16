@@ -17,7 +17,6 @@ import requests
 from pexels_api import API
 
 #? Librerie per gestire il bot 
-from telebot import types 
 import telebot
 
 #? Libreria per gestire il DB
