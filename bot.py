@@ -18,6 +18,7 @@ from pexels_api import API
 
 #? Librerie per gestire il bot 
 import telebot
+from telebot import types
 
 #? Libreria per gestire il DB
 from pymongo import MongoClient
