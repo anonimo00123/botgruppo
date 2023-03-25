@@ -523,7 +523,7 @@ def canzone(message):
 
 
                     
-                mess = bot.send_message(message.chat.id, gt_results_string, parse_mode='html', reply_markup=tastiera)
+                mess = bot.send_video(message.chat.id,  open('canzone.mp4', 'rb'), caption=gt_results_string, parse_mode='html',reply_markup=tastiera)
                 canzoni.update({'key' : mess.message_id })
                 dbsearch.insert_one(canzoni)
 
