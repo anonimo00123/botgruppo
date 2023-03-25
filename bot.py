@@ -17,8 +17,7 @@ import requests
 from pexels_api import API
 
 #? Librerie per gestire il bot 
-from telebot import telebot
-from telebot import *
+import telebot
 
 #? Libreria per gestire il DB
 from pymongo import MongoClient
