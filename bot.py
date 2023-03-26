@@ -484,7 +484,7 @@ def ai (message) :
         model="text-davinci-003",
         prompt=richiesta,
         temperature=0.7,
-        max_tokens=None,
+        max_tokens=999,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0
