@@ -492,6 +492,26 @@ def ai (message) :
         bot.send_message(gruppo, f"<code>{response.choices[0].text}</code>", parse_mode="html")
     except Exception as ex : 
         salvaerrore(ex)
+        
+@bot.edited_message_handler(regexp='robotita immagine di', chat_types='supergroup')
+@bot.edited_message_handler(regexp='ROBOTITA IMMAGINE DI', chat_types='supergroup')
+@bot.message_handler(regexp='ROBOTITA IMMAGINE DI', chat_types='supergroup')
+@bot.message_handler(regexp='ROBOTITA IMMAGINE DI', chat_types='supergroup')
+def startaimg(message) : Thread (target=aimg, args=[message]).start()
+def aimg (message) : 
+    try: 
+        print('ciao')
+        openai.api_key = "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"
+        richiesta = message.text[19:len(message.text)]
+        response = openai.Image.create(
+        prompt=richiesta,
+        n=1,
+        size="1024x1024"
+        )
+        image_url = response['data'][0]['url']
+        bot.send_photo(gruppo, image_url)
+    except Exception as ex : 
+        salvaerrore(ex)
 #1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟
 dbsearch = client.get_database('Canz').search 
 @bot.edited_message_handler(regexp='/canzone', chat_types='supergroup')
