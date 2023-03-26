@@ -511,6 +511,8 @@ def aimg (message) :
         image_url = response['data'][0]['url']
         bot.send_photo(gruppo, image_url)
     except Exception as ex : 
+        if "safety system." in str(ex) :
+            bot.send_message(gruppo, "L'immagine che vuoi creare non supera i nostri sistema di sicurezza")
         salvaerrore(ex)
 #1️⃣2️⃣3️⃣4️⃣5️⃣6️⃣7️⃣8️⃣9️⃣🔟
 dbsearch = client.get_database('Canz').search 
