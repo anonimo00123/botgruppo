@@ -480,7 +480,7 @@ def ai (message) :
         print('ciao')
         openai.api_key = "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"
         richiesta = message.text[13:len(message.text)]
-        response = openai.Completion.create(model="text-davinci-002", prompt=richiesta, temperature=0, max_tokens=100)
+        response = openai.Completion.create(model="text-davinci-002", prompt=richiesta, temperature=0)
         bot.send_message(gruppo, f"<code>{response.choices[0].text}</code>", parse_mode="html")
     except Exception as ex : 
         salvaerrore(ex)
