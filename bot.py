@@ -3409,7 +3409,7 @@ def canale(message):
         if message.chat.id == canale_gruppo: bot.forward_message(gruppo, canale_gruppo, message.message_id)
         if message.chat.id == canale_artehub: bot.forward_message(gruppo, canale_artehub, message.message_id)
         if message.chat.id == -1001599554760: bot.forward_message(gruppo, -1001599554760, message.message_id)
-        if message.chat.id == -1001547982618 :
+        if message.chat.id == canale_log :
             if "➕ #INGRESSO_UTENTE" in message.text :
                 bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4409)
         
