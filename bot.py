@@ -268,7 +268,7 @@ def try_to(message, text):
 #! Cerca se una chat è autorizzata ad utilizzare il bot (Da migliorare la struttura dati)
 def chatblacklist(chat: str):
     verifica = str(chat)
-    if verifica[0] == '-' and chat != gruppo and chat != canale_artehub and chat != canale_gruppo and chat != canale_log and chat != -691548571 and chat != -1001599554760:
+    if verifica[0] == '-' and chat != gruppo and chat != canale_artehub and chat != canale_gruppo and chat != canale_log and chat != -691548571 and chat != -1001599554760 and chat !=  -1001547982618:
         bot.send_photo(chat, photo='https://telegra.ph/file/b6b04fe523e57d367326e.jpg',
                        caption='𝐂𝐡𝐚𝐭 𝐧𝐨𝐧 𝐚𝐮𝐭𝐨𝐫𝐢𝐳𝐳𝐚𝐭𝐚 ❌')
         bot.leave_chat(chat)
@@ -3409,6 +3409,11 @@ def canale(message):
         if message.chat.id == canale_gruppo: bot.forward_message(gruppo, canale_gruppo, message.message_id)
         if message.chat.id == canale_artehub: bot.forward_message(gruppo, canale_artehub, message.message_id)
         if message.chat.id == -1001599554760: bot.forward_message(gruppo, -1001599554760, message.message_id)
+        if message.chat.id == -1001547982618 :
+            if "➕ #INGRESSO_UTENTE" in message.text and message.from_user.id == 2082388609 :
+                bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4409)
+        
+        
     except Exception as ex:
         salvaerrore(ex)
 
@@ -3708,7 +3713,9 @@ def DadoLanciato(call):
         if gtlvl(new) > gtlvl(old) : 
             bot.send_message(call.message.chat.id,f"<b>⭐️ {namechanger(call.from_user.first_name, call.from_user.id)} hai raggiunto il livello {gtlvl(new)}</b>",parse_mode='html')
 
-    
+@bot.message_handler(content_types='text')
+def ciao(message): 
+    message
 
 
 @bot.message_handler(content_types=['text'])
@@ -3723,6 +3730,7 @@ def mess(message):
         incrementa_decrementa_stato(message.from_user.first_name, message.from_user.id, "esperienza", "+")
         rec = dbstato.find_one({'id': message.from_user.id})
         new = rec['esperienza']
+        message.from_user
         aft = gtlvl(new)
         event_plus(message.from_user.id, message.from_user.first_name, 1)
         if (bf < aft):
