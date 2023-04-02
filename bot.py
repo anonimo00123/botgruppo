@@ -3417,7 +3417,7 @@ def canale(message):
                 bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4436)
             if "🆘 #SEGNALAZIONE" in message.text : 
                 bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4435)
-            if "➖ #RIMOSSO_RUOLO #MOD 👷🏻‍♂️" in message.text and "➕ #AGGIUNTO_RUOLO #MOD 👷🏻‍♂️" in message.text and "➖ #RIMOSSO_RUOLO #HELPER ⛑" in message.text and "➕ #AGGIUNTO_RUOLO #HELPER ⛑" in message.text and "➖ #RIMOSSO_RUOLO #MUTER 🙊" in message.text and "➕ #AGGIUNTO_RUOLO #MUTER 🙊" in message.text and "➕ #AGGIUNTO_RUOLO #FREE 🔓" in message.text and "➕ #AGGIUNTO_RUOLO #ADMIN 👮🏻‍♂️" in message.text and "➖ #RIMOSSO_RUOLO #ADMIN 👮🏻‍♂️" in message.text :
+            if "➖ #RIMOSSO_RUOLO #MOD 👷🏻‍♂️" in message.text or "➕ #AGGIUNTO_RUOLO #MOD 👷🏻‍♂️" in message.text  or "➖ #RIMOSSO_RUOLO #HELPER ⛑" in message.text or "➕ #AGGIUNTO_RUOLO #HELPER ⛑" in message.text or "➖ #RIMOSSO_RUOLO #MUTER 🙊" in message.text or "➕ #AGGIUNTO_RUOLO #MUTER 🙊" in message.text or "➕ #AGGIUNTO_RUOLO #FREE 🔓" in message.text or "➕ #AGGIUNTO_RUOLO #ADMIN 👮🏻‍♂️" in message.text or "➖ #RIMOSSO_RUOLO #ADMIN 👮🏻‍♂️" in message.text :
                 bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4437)
 
 
