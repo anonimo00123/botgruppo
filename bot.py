@@ -3411,8 +3411,15 @@ def canale(message):
         if message.chat.id == canale_artehub: bot.forward_message(gruppo, canale_artehub, message.message_id)
         if message.chat.id == -1001599554760: bot.forward_message(gruppo, -1001599554760, message.message_id)
         if message.chat.id == canale_log :
-            if "➕ #INGRESSO_UTENTE" in message.text and "• Gruppo: ⚡️ ɢʀᴜᴘᴘᴏ ɪᴛ 🇮🇹 [-1001434687578]" in message.text:
+            if "➕ #INGRESSO_UTENTE" in message.text :
                 bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4409)
+            if "🔇 #MUTA" in message.text or "🕉 #NOME_ARABO" in message.text or "❕ #WARN_RESET 0️⃣" in message.text or "❕ #MODIFICA_WARN ✍🏻" in message.text or "❕ #WARN ➕" in message.text or "🔈 #UNMUTA" in message.text or "📨 #SPAM #LINK 🔗" in message.text or "✅ #UNBAN" in message.text or "📵 #MEDIA #PORNO 🔞" in message.text or "📛 #BLACKLIST_BAN_TOTALE 🚷" in message.text or "🚷 #BAN" in message.text and "🔣 #FLOOD" in message.text  : 
+                bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4436)
+            if "🆘 #SEGNALAZIONE" in message.text : 
+                bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4435)
+            if "➖ #RIMOSSO_RUOLO #MOD 👷🏻‍♂️" in message.text and "➕ #AGGIUNTO_RUOLO #MOD 👷🏻‍♂️" in message.text and "➖ #RIMOSSO_RUOLO #HELPER ⛑" in message.text and "➕ #AGGIUNTO_RUOLO #HELPER ⛑" in message.text and "➖ #RIMOSSO_RUOLO #MUTER 🙊" in message.text and "➕ #AGGIUNTO_RUOLO #MUTER 🙊" in message.text and "➕ #AGGIUNTO_RUOLO #FREE 🔓" in message.text and "➕ #AGGIUNTO_RUOLO #ADMIN 👮🏻‍♂️" in message.text and "➖ #RIMOSSO_RUOLO #ADMIN 👮🏻‍♂️" in message.text :
+                bot.forward_message(-1001547982618,canale_log,message.message_id, message_thread_id=4437)
+
 
         
     except Exception as ex:
