@@ -3713,9 +3713,7 @@ def DadoLanciato(call):
         if gtlvl(new) > gtlvl(old) : 
             bot.send_message(call.message.chat.id,f"<b>⭐️ {namechanger(call.from_user.first_name, call.from_user.id)} hai raggiunto il livello {gtlvl(new)}</b>",parse_mode='html')
 
-@bot.message_handler(content_types='text')
-def ciao(message): 
-    message
+
 
 
 @bot.message_handler(content_types=['text'])
@@ -3723,6 +3721,7 @@ def startmess(message): Thread(target=mess, args=[message]).start()
 
 
 def mess(message):
+    print(str(message))
     if chatblacklist(message.chat.id) is True:
         record = dbstato.find_one({'id': message.from_user.id})
         old = record['esperienza']
