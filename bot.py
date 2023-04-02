@@ -3406,6 +3406,7 @@ def canalestart(message): Thread(target=canale, args=[message]).start()
 
 def canale(message):
     try:
+        print(message)
         if message.chat.id == canale_gruppo: bot.forward_message(gruppo, canale_gruppo, message.message_id)
         if message.chat.id == canale_artehub: bot.forward_message(gruppo, canale_artehub, message.message_id)
         if message.chat.id == -1001599554760: bot.forward_message(gruppo, -1001599554760, message.message_id)
