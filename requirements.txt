@@ -8,3 +8,4 @@ telethon ==  1.24.0
 openai == 0.25.0
 pytube == 12.1.2
 youtube-search == 2.1.2
+flask == 2.2.3
