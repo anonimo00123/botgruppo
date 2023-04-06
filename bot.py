@@ -42,28 +42,11 @@ from youtube_search import YoutubeSearch
 import pytube
 from pytube import YouTube
 
-# save this as app.py
-from flask import Flask,render_template
 
-app = Flask(__name__)
-
-@app.route("/")
-def hello():
-    return render_template('index.html')
-app.run()
 
 #! Avviso in console che il bot è stato avviato
 print('! Il bot attualmente è in esecuzione !')
 
-#! Credenziali per accedere ad un userbot 
-api_id = 11029867
-api_hash = '6662f2f9d722cd6ab5263dfa1d53cb0b'
-
-#! Esempio di codice con l'userbot per trovare le info di un utente scelto 
-def ottieniutente(utente: str):
-    with TelegramClient('session_name', api_id, api_hash) as client:
-        result = client(functions.users.GetFullUserRequest(id=utente))
-        print(result.stringify())
 
 # ! Client Mongodb
 client = MongoClient("mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
