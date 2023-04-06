@@ -42,6 +42,12 @@ from youtube_search import YoutubeSearch
 import pytube
 from pytube import YouTube
 
+from flask import Flask, render_template, app
+
+@app.route('/')
+def index():
+    return render_template('index,html')
+
 #! Avviso in console che il bot è stato avviato
 print('! Il bot attualmente è in esecuzione !')
 
