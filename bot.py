@@ -50,6 +50,7 @@ app = Flask(__name__)
 @app.route("/")
 def hello():
     return render_template('index.html')
+app.run()
 
 #! Avviso in console che il bot è stato avviato
 print('! Il bot attualmente è in esecuzione !')
