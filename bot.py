@@ -42,11 +42,14 @@ from youtube_search import YoutubeSearch
 import pytube
 from pytube import YouTube
 
-from flask import Flask, render_template, app
+# save this as app.py
+from flask import Flask,render_template
 
-@app.route('/')
-def index():
-    return render_template('index,html')
+app = Flask(__name__)
+
+@app.route("/")
+def hello():
+    return render_template('index.html')
 
 #! Avviso in console che il bot è stato avviato
 print('! Il bot attualmente è in esecuzione !')
