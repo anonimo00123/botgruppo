@@ -52,7 +52,7 @@ print('! Il bot attualmente è in esecuzione !')
 client = MongoClient("mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 # ! Bot token
-bot = telebot.TeleBot("5414774013:AAFMLODKuQiqg-3K31p8vz93a3C_nD9WX1E")
+bot = telebot.TeleBot("5414774013:AAFMLODKuQiqg-3K31p8vz93a3C_nD9WX1E", parse_mode="HTML")
 
 # ! Variabili globali per la connessione al database
 
@@ -177,6 +177,12 @@ memory = -1001539169495
 quizzes = []
 arrdadi  = []
 
+def b(text:str):
+    return f"<b>" + str(text) + "</b>"
+def i(text:str):    
+    return f"<i>" + str(text) + "</i>"
+def code(text:str):     
+    return f"<code>" + str(text) + "</code>"
 
 # ! Inserisce un nuovo utente nella tabella delo status
 def nuovo_utente_stato(nome, id):
@@ -263,7 +269,7 @@ def chatblacklist(chat: str):
     verifica = str(chat)
     if verifica[0] == '-' and chat != gruppo and chat != canale_artehub and chat != canale_gruppo and chat != canale_log and chat != -691548571 and chat != -1001599554760 and chat !=  -1001547982618:
         bot.send_photo(chat, photo='https://telegra.ph/file/b6b04fe523e57d367326e.jpg',
-                       caption='𝐂𝐡𝐚𝐭 𝐧𝐨𝐧 𝐚𝐮𝐭𝐨𝐫𝐢𝐳𝐳𝐚𝐭𝐚 ❌')
+                       caption=f'❌ ➜ {b(f"Chat non autorizzata")}\n\n🆔 ➜ {chat}')
         bot.leave_chat(chat)
         return False
     else:
@@ -306,7 +312,7 @@ def unrispetto(message):
             if str(bot.get_chat_member(message.chat.id, message.from_user.id).status) == "administrator":
                 #? l'amministratore ha risposto al messaggio dell'utente a cui vuole togliere un punto di rispetto?
                 if verifica_esistenza(message) == False:
-                    bot.send_message(message.chat.id,"𝗥𝗶𝘀𝗽𝗼𝗻𝗱𝗶 𝗮𝗱 𝘂𝗻 𝘂𝘁𝗲𝗻𝘁𝗲 ✍️ \n 💬 »  <i>Ricordati di rispondere all'utente a cui vuoi togliere il punto rispetto</i>",parse_mode="html")
+                    bot.send_message(message.chat.id,f"⚠️ {b('Come unrispettare un utente ')}⚠️\n\n📘 ➜ {i('''scrivere il comando > rispondere al messaggio dell'utente che vuoi unrispettare > inviare il messaggio''')} ",parse_mode="html")
                 #? L'amministratore sta unrispettando se stesso? 
                 elif message.from_user.id == message.reply_to_message.from_user.id:
                     try_to(message, "<i>🛠» Non puoi unrispettare te stesso </i>")
@@ -330,14 +336,14 @@ def rispetto(message):
             if str(bot.get_chat_member(message.chat.id, message.from_user.id).status) == "administrator":
                 #? L'amministratore ha risposto al messaggio dell'utente a cuoi vuole aggiungere rispetto?
                 if verifica_esistenza(message) == False:
-                    bot.send_message(message.chat.id,"𝗥𝗶𝘀𝗽𝗼𝗻𝗱𝗶 𝗮𝗱 𝘂𝗻 𝘂𝘁𝗲𝗻𝘁𝗲 ✍️ \n 💬 » <i>Ricordati di rispondere all'utente a cui vuoi aggiungere il punto rispetto</i>", parse_mode="html")
+                    bot.send_message(message.chat.id,f"⚠️ {b('Come rispettare un utente ')}⚠️\n\n📘 ➜ {i('''scrivere il comando > rispondere al messaggio dell'utente che vuoi rispettare > inviare il messaggio''')} ",parse_mode="html")
                 #? L'amministratore ha rispettato se stesso?
                 elif message.from_user.id == message.reply_to_message.from_user.id:
-                    try_to(message, "<i>🛠» Non puoi rispettare te stesso </i>")
+                    try_to(message, "<i>🛠 ➜ Non puoi rispettare te stesso </i>")
                 else:
                     #? Aggiunge un punto di rispetto all'utente
                     save_info_stato(message.reply_to_message.from_user.first_name, "rispetto", message.from_user.id,message.reply_to_message.from_user.id, message.from_user.first_name, "+")
-                    bot.send_message(message.chat.id, "🎉 𝗖𝗼𝗺𝗽𝗹𝗶𝗺𝗲𝗻𝘁𝗶 »<i>" + namechanger(message.reply_to_message.from_user.first_name,message.reply_to_message.from_user.id) + " Hai ottenuto un punto di rispetto</i>",parse_mode="html")
+                    bot.send_message(message.chat.id, "🎉 𝗖𝗼𝗺𝗽𝗹𝗶𝗺𝗲𝗻𝘁𝗶 ➜<i>" + namechanger(message.reply_to_message.from_user.first_name,message.reply_to_message.from_user.id) + " Hai ottenuto un punto di rispetto</i>",parse_mode="html")
     except Exception as ex:
         salvaerrore(ex)
 
@@ -482,7 +488,8 @@ def ai (message) :
         frequency_penalty=0,
         presence_penalty=0
         )
-        bot.send_message(gruppo, f"<code>{response.choices[0].text}</code>", parse_mode="html")
+        risposta = response.choices[0].text
+        bot.send_message(gruppo, f"🔎 ➜ <b>{richiesta}</b>\n\n🧠 ➜ <i>{risposta[2:len(risposta)]}</i>", parse_mode="html")
     except Exception as ex : 
         salvaerrore(ex)
         
@@ -495,14 +502,14 @@ def aimg (message) :
     try: 
         print('ciao')
         openai.api_key = "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"
-        richiesta = message.text[19:len(message.text)]
+        richiesta = message.text[20:len(message.text)]
         response = openai.Image.create(
         prompt=richiesta,
         n=1,
         size="1024x1024"
         )
         image_url = response['data'][0]['url']
-        bot.send_photo(gruppo, image_url)
+        bot.send_photo(gruppo, image_url, caption=f"📷 ➜ <b>Foto di {richiesta}</b>", parse_mode="html")
     except Exception as ex : 
         if "safety system." in str(ex) :
             bot.send_message(gruppo, "L'immagine che vuoi creare non supera i nostri sistema di sicurezza")
