@@ -3724,6 +3724,50 @@ def DadoLanciato(call):
 
 
 
+dbtarghetta = client.get_database("robotita").targhette
+dbprofili =  client.get_database("robotita").profili
+
+
+
+@bot.edited_message_handler(commands=['targa', 'targa'], chat_types='supergroup')
+@bot.message_handler(commands=['targa', 'targa'], chat_types='supergroup')
+def starttarga(message): Thread(target=targa, args=[message]).start()
+
+
+
+
+def targa(message):
+    if chatblacklist(message.chat.id) is True:
+        
+        if bot.get_chat_member(message.chat.id, message.from_user.id).can_restrict_members:
+            contenuto = verifysecond(message, 'targa')
+            if contenuto == 'false':
+                nontrovato(message, '/targa  [targa]')
+            if contenuto == "no": 
+                trova = dbtarghetta.find_one({'id':message.reply_to_message.from_user.id})
+                if trova is not None : 
+                    dbtarghetta.delete_one({'id':message.reply_to_message.from_user.id})
+                    bot.send_message(message.chat.id, "targa eliminata correttamente" )
+            else:
+                id = verifica_esistenza(message)
+                try:
+                    if id == False:
+                        try_to(message, "🧐 » <i>Deve rispondere al messaggio dell'utente a cui vuoi aggiugnere la targa</i>")
+                    else:
+                        trova = dbtarghetta.find_one({'id':message.reply_to_message.from_user.id})
+                        if trova != None:
+                            if trova['mask'] == contenuto :
+                                bot.send_message(message.chat.id, "L'utente ha già questa targa")
+                            else:
+                                    dbtarghetta.find_one_and_update({'id': message.reply_to_message.from_user.id},{"$set": {'mask': contenuto}},upsert=True)
+                                    bot.send_message(message.chat.id, 'Targa modificata correttamente')
+                        else: 
+                            dbtarghetta.insert_one({'id': message.reply_to_message.from_user.id, 'mask': contenuto})
+                            bot.send_message(message.chat.id, 'Targa aggiunta correttamente')
+                                
+                except Exception as ex:
+                    salvaerrore(ex)
+
 @bot.message_handler(content_types=['text'])
 def startmess(message): Thread(target=mess, args=[message]).start()
 
@@ -3731,6 +3775,25 @@ def startmess(message): Thread(target=mess, args=[message]).start()
 def mess(message):
     print(str(message))
     if chatblacklist(message.chat.id) is True:
+
+        ris = dbprofili.find_one({'id': message.from_user.id})
+        if(ris is not None):
+            if(message.from_user.first_name  != ris['name'] or ris['lastname'] != message.from_user.last_name ):
+                dbprofili.find_one_and_update({'id': message.from_user.id},{"$set": {'name': message.from_user.first_name, 'lastname': message.from_user.last_name}},upsert=True)
+        else : 
+            dbprofili.insert_one({'id' : message.from_user.id, 'name': message.from_user.first_name, 'lastname': message.from_user.last_name})
+
+
+        targhette =dbtarghetta.find({})
+        for targa in targhette :
+            if targa['mask'] in message.text.lower(): 
+                ris = dbprofili.find_one({'id': targa['id']})
+                try_to(message,namechanger(ris['name'], targa['id']))
+
+        
+
+        
+
         record = dbstato.find_one({'id': message.from_user.id})
         old = record['esperienza']
         bf = gtlvl(old)
