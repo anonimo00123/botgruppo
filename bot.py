@@ -395,7 +395,7 @@ def like(message):
 def startgetip(message): Thread(target=getip, args=[message]).start()
 def getip(message):
     if chatblacklist(message.chat.id) is True:
-        contenuto = verifysecond(message, 'getip')
+        contenuto = verifysecond(message, 'ip')
         if contenuto == 'false':
             nontrovato(message, '/ip [ip]')
         else:
