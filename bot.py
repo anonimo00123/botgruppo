@@ -50,7 +50,7 @@ print('! Il bot attualmente è in esecuzione !')
 client = MongoClient("mongodb+srv://jkdjxkkx:steenf385@cluster0.h1fnl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
 # ! Bot token
-bot = telebot.TeleBot("6059510336:AAHuNxYVXxk17r3sNtZ-HhvscUKFf_8xvIE", parse_mode="HTML")
+bot = telebot.TeleBot("5414774013:AAFMLODKuQiqg-3K31p8vz93a3C_nD9WX1E", parse_mode="HTML")
 
 # ! Variabili globali per la connessione al database
 
