@@ -34,11 +34,6 @@ import openai
 import os
 
 #? cerca da Youtube
-from youtube_search import YoutubeSearch
-
-#? Scarica da youtube 
-import pytube
-from pytube import YouTube
 
 
 
