@@ -393,17 +393,47 @@ def like(message):
 @bot.message_handler(regexp='/ip', chat_types='supergroup')
 @bot.message_handler(regexp='/IP', chat_types='supergroup')
 def startgetip(message): Thread(target=getip, args=[message]).start()
-
-
 def getip(message):
     if chatblacklist(message.chat.id) is True:
-        contenuto = verifysecond(message, 'ip')
+        contenuto = verifysecond(message, 'getip')
         if contenuto == 'false':
             nontrovato(message, '/ip [ip]')
-        else : 
+        else:
             response = requests.get(f'https://ipinfo.io/{contenuto}/geo').json()
-            bot.send_message(gruppo, f'🆔 » {contenuto}\n🗺 » {response["city"]}, {response["region"]}, {response["country"]}\n🖥 » {response["hostname"]}\n⏳» {response["timezone"]}\n📫» {response["postal"]}\n🏬» {response["org"]}\n🗾» {response["loc"]}')
-
+            try:
+                city = response["city"]
+                region = response["region"]
+                country = response["country"]
+                hostname = response["hostname"]
+                timezone = response["timezone"]
+                postal = response["postal"]
+                org = response["org"]
+                loc = response["loc"]
+                
+                # Mostra solo i campi disponibili
+                message_text = f'🆔 » {contenuto}\n'
+                if city:
+                    message_text += f'🗺 » {city}, '
+                if region:
+                    message_text += f'{region}, '
+                if country:
+                    message_text += f'{country}\n'
+                if hostname:
+                    message_text += f'🖥 » {hostname}\n'
+                if timezone:
+                    message_text += f'⏳» {timezone}\n'
+                if postal:
+                    message_text += f'📫» {postal}\n'
+                if org:
+                    message_text += f'🏬» {org}\n'
+                if loc:
+                    message_text += f'🗾» {loc}'
+                
+                bot.send_message(gruppo, message_text)
+                
+            except KeyError:
+                # Ignora l'errore KeyError senza inviare alcun messaggio di errore
+                pass
 
 @bot.message_handler(commands=['ask', 'ASK'], chat_types='supergroup')
 def startask(message): Thread(target=ask, args=[message]).start()
