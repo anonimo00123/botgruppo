@@ -272,7 +272,6 @@ def try_to_two(message, text):
 
 
 # ! Verifica se hai risposto realmente ad un utente per eseguire un comando t
-o /operatore
 def verifica_esistenza(message):
     try:
         return message.reply_to_message.from_user.id
