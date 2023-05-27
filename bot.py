@@ -271,7 +271,8 @@ def try_to_two(message, text):
             salvaerrore(ex)
 
 
-# ! Verifica se hai risposto realmente ad un utente per eseguire un comando tipo /operatore
+# ! Verifica se hai risposto realmente ad un utente per eseguire un comando t
+o /operatore
 def verifica_esistenza(message):
     try:
         return message.reply_to_message.from_user.id
@@ -397,7 +398,7 @@ def startgetip(message): Thread(target=getip, args=[message]).start()
 
 def getip(message):
     if chatblacklist(message.chat.id) is True:
-        contenuto = verifysecond(message, 'getip')
+        contenuto = verifysecond(message, 'ip')
         if contenuto == 'false':
             nontrovato(message, '/ip [ip]')
         else : 
