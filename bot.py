@@ -388,6 +388,22 @@ def like(message):
                                     parse_mode="html")
 
 
+@bot.edited_message_handler(regexp='/ip', chat_types='supergroup')
+@bot.edited_message_handler(regexp='/IP', chat_types='supergroup')
+@bot.message_handler(regexp='/ip', chat_types='supergroup')
+@bot.message_handler(regexp='/IP', chat_types='supergroup')
+def startgetip(message): Thread(target=getip, args=[message]).start()
+
+
+def getip(message):
+    if chatblacklist(message.chat.id) is True:
+        contenuto = verifysecond(message, 'getip')
+        if contenuto == 'false':
+            nontrovato(message, '/ip [ip]')
+        else : 
+            response = requests.get(f'https://ipinfo.io/{contenuto}/geo').json()
+            bot.send_message(gruppo, f'🆔 » {contenuto}\n🗺 » {response["city"]}, {response["region"]}, {response["country"]}\n🖥 » {response["hostname"]}\n⏳» {response["timezone"]}\n📫» {response["postal"]}\n🏬» {response["org"]}\n🗾» {response["loc"]}')
+
 
 @bot.message_handler(commands=['ask', 'ASK'], chat_types='supergroup')
 def startask(message): Thread(target=ask, args=[message]).start()
