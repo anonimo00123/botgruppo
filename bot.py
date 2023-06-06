@@ -448,8 +448,7 @@ def ask(message):
         except Exception as ex:
             try:
                 bot.send_message(message.chat.id,
-                                 dbask.find({}).limit(-1).skip(random.randint(1, dbask.count_documents({}))).next()[
-                                     'ask'])
+                                 dbask.find({}).limit(-1).skip(random.randint(1, dbask.count_documents({}))).next()['ask'])
             except Exception as ex:
                 salvaerrore(ex)
 
@@ -3361,54 +3360,67 @@ def targa(message):
                                 
                 except Exception as ex:
                     salvaerrore(ex)
+def Taggatrice (message): 
+    ris = dbprofili.find_one({'id': message.from_user.id})
+    if(ris is not None):
+        if(message.from_user.first_name  != ris['name'] or ris['lastname'] != message.from_user.last_name ):
+            dbprofili.find_one_and_update({'id': message.from_user.id},{"$set": {'name': message.from_user.first_name, 'lastname': message.from_user.last_name}},upsert=True)
+    else : 
+        dbprofili.insert_one({'id' : message.from_user.id, 'name': message.from_user.first_name, 'lastname': message.from_user.last_name})
+    targhette =dbtarghetta.find({})
+    for targa in targhette :
+        if targa['mask'] in message.text.lower(): 
+            ris = dbprofili.find_one({'id': targa['id']})
+            try_to(message,namechanger(ris['name'], targa['id']))
+            try: 
+                tastiera = types.InlineKeyboardMarkup()
+                vedi = types.InlineKeyboardButton(text='👀', url=f'https://t.me/gruppo_it/{message.message_id}')
+                tastiera.add(vedi)
+                bot.send_photo(
+                    targa['id'], 
+                    open('images/1.png', 'rb'), 
+                    "<b>🏷 Nuova menzione </b>",
+                    reply_markup=tastiera
+                )
+            except :
+                return 0
+                
+                
 
+def Check_level(message): 
+    record = dbstato.find_one({'id': message.from_user.id})
+    old = record['esperienza']
+    bf = gtlvl(old)
+    incrementa_decrementa_stato(message.from_user.first_name, message.from_user.id, "esperienza", "+")
+    rec = dbstato.find_one({'id': message.from_user.id})
+    new = rec['esperienza']
+    message.from_user
+    aft = gtlvl(new)
+    event_plus(message.from_user.id, message.from_user.first_name, 1)
+    if (bf < aft):
+        try_to(message,f"<b>⭐️ {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}")
+
+def Send_quiz(message): 
+    cerca = dbinfo.find_one({'argomento': 'quiza'})
+    if cerca['messa'] + 1 >= cerca['randoma']  :
+        dbinfo.find_one_and_update({'argomento': 'quiza'},{"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},upsert=True)
+        if random.randint(0,1) : 
+            quiz(message)
+        else : 
+            dadi(message)
+    else:
+        dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': cerca['messa'] + 1}}, upsert=True)
 @bot.message_handler(content_types=['text'])
 def startmess(message): Thread(target=mess, args=[message]).start()
 
 
 def mess(message):
-    print(str(message))
     if chatblacklist(message.chat.id) is True:
-
-        ris = dbprofili.find_one({'id': message.from_user.id})
-        if(ris is not None):
-            if(message.from_user.first_name  != ris['name'] or ris['lastname'] != message.from_user.last_name ):
-                dbprofili.find_one_and_update({'id': message.from_user.id},{"$set": {'name': message.from_user.first_name, 'lastname': message.from_user.last_name}},upsert=True)
-        else : 
-            dbprofili.insert_one({'id' : message.from_user.id, 'name': message.from_user.first_name, 'lastname': message.from_user.last_name})
+        Taggatrice(message)
+        Check_level(message)
+        Send_quiz(message)
 
 
-        targhette =dbtarghetta.find({})
-        for targa in targhette :
-            if targa['mask'] in message.text.lower(): 
-                ris = dbprofili.find_one({'id': targa['id']})
-                try_to(message,namechanger(ris['name'], targa['id']))
-
-        
-
-        
-
-        record = dbstato.find_one({'id': message.from_user.id})
-        old = record['esperienza']
-        bf = gtlvl(old)
-        incrementa_decrementa_stato(message.from_user.first_name, message.from_user.id, "esperienza", "+")
-        rec = dbstato.find_one({'id': message.from_user.id})
-        new = rec['esperienza']
-        message.from_user
-        aft = gtlvl(new)
-        event_plus(message.from_user.id, message.from_user.first_name, 1)
-        if (bf < aft):
-            try_to(message,f"<b>⭐️ {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}")
-        cerca = dbinfo.find_one({'argomento': 'quiza'})
-
-        if cerca['messa'] + 1 >= cerca['randoma']  :
-            dbinfo.find_one_and_update({'argomento': 'quiza'},{"$set": {'messa': 0, 'randoma': random.randint(100, 250)}},upsert=True)
-            if random.randint(0,1) : 
-                quiz(message)
-            else : 
-                dadi(message)
-        else:
-            dbinfo.find_one_and_update({'argomento': 'quiza'}, {"$set": {'messa': cerca['messa'] + 1}}, upsert=True)
 
 def event_plus (id,utente,aumento): 
     if checkevent() : 
