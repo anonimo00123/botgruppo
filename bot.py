@@ -3081,7 +3081,7 @@ def rispostaprima(call):
                 if (niu < vecc):
                     bot.send_photo(
                         gruppo, 
-                        open('/images/levelup.png', 'rb'),
+                        open('images/levelup.png', 'rb'),
                         f"<b>⭐️» {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}"
                 )
                 dbstato.find_one_and_update({'id': call.from_user.id}, {
@@ -3121,7 +3121,7 @@ def rispostaprima(call):
                 if (niu < vecc):
                     bot.send_photo(
                         gruppo, 
-                        open('/images/levelup.png', 'rb'),
+                        open('images/levelup.png', 'rb'),
                         f"<b>⭐️» {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}"
                 )
                 dbstato.find_one_and_update({'id': call.from_user.id}, {
@@ -3160,7 +3160,7 @@ def rispostaprima(call):
                 if (niu < vecc):
                     bot.send_photo(
                         gruppo, 
-                        open('/images/levelup.png', 'rb'),
+                        open('images/levelup.png', 'rb'),
                         f"<b>⭐️» {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}"
                 )
 
@@ -3321,7 +3321,7 @@ def DadoLanciato(call):
         if gtlvl(new) > gtlvl(old) : 
             bot.send_photo(
                 gruppo, 
-                open('/images/levelup.png', 'rb'),
+                open('images/levelup.png', 'rb'),
                 f"<b>⭐️» {namechanger(call.from_user.first_name, call.from_user.id)} hai raggiunto il livello {gtlvl(new)}</b>"
         )
 
@@ -3413,7 +3413,7 @@ def Check_level(message):
     if (bf < aft):
         bot.send_photo(
             gruppo, 
-            open('/images/levelup.png', 'rb'),
+            open('images/levelup.png', 'rb'),
             f"<b>⭐️ » {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}"
         )
 
