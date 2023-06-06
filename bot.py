@@ -3378,7 +3378,7 @@ def Taggatrice (message):
                 tastiera.add(vedi)
                 bot.send_photo(
                     targa['id'], 
-                    open('images/1.png', 'rb'), 
+                    open('images/mention.png', 'rb'), 
                     "<b>🏷 Nuova menzione </b>",
                     reply_markup=tastiera
                 )
