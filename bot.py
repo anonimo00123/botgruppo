@@ -3079,9 +3079,11 @@ def rispostaprima(call):
                 niu = gtlvl(info['esperienza'])
                 vecc = gtlvl(info['esperienza'] + won)
                 if (niu < vecc):
-                    bot.send_message(gruppo,
-                                        f"<b>⭐️ {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}",
-                                        parse_mode='html')
+                    bot.send_photo(
+                        gruppo, 
+                        open('/images/levelup.png', 'rb'),
+                        f"<b>⭐️» {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}"
+                )
                 dbstato.find_one_and_update({'id': call.from_user.id}, {
                     "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
                                             upsert=True)
@@ -3117,9 +3119,11 @@ def rispostaprima(call):
                 niu = gtlvl(info['esperienza'])
                 vecc = gtlvl(info['esperienza'] + won)
                 if (niu < vecc):
-                    bot.send_message(gruppo,
-                                        f"<b>⭐️ {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}",
-                                        parse_mode='html')
+                    bot.send_photo(
+                        gruppo, 
+                        open('/images/levelup.png', 'rb'),
+                        f"<b>⭐️» {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}"
+                )
                 dbstato.find_one_and_update({'id': call.from_user.id}, {
                     "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
                                             upsert=True)
@@ -3154,9 +3158,12 @@ def rispostaprima(call):
                 niu = gtlvl(info['esperienza'])
                 vecc = gtlvl(info['esperienza'] + won)
                 if (niu < vecc):
-                    bot.send_message(gruppo,
-                                        f"<b>⭐️ {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}",
-                                        parse_mode='html')
+                    bot.send_photo(
+                        gruppo, 
+                        open('/images/levelup.png', 'rb'),
+                        f"<b>⭐️» {namechanger(call.from_user.first_name, call.from_user.id)} Hai raggiunto il livello</b> {vecc}"
+                )
+
                 dbstato.find_one_and_update({'id': call.from_user.id}, {
                     "$set": {"esperienza": info['esperienza'] + won, "name": call.from_user.first_name}},
                                             upsert=True)
@@ -3312,7 +3319,12 @@ def DadoLanciato(call):
             dbstato.find_one_and_update({'id': call.from_user.id},{"$set": {'esperienza': new}},upsert=True)
             bot.send_message(call.message.chat.id, f'{namechanger(call.from_user.first_name, call.from_user.id)} hai perso contro il bot🏆, Ma ti diamo comunque 25 punti esperienza ⭐️  ', reply_to_message_id=lancio_utente.message_id, parse_mode='html')
         if gtlvl(new) > gtlvl(old) : 
-            bot.send_message(call.message.chat.id,f"<b>⭐️ {namechanger(call.from_user.first_name, call.from_user.id)} hai raggiunto il livello {gtlvl(new)}</b>",parse_mode='html')
+            bot.send_photo(
+                gruppo, 
+                open('/images/levelup.png', 'rb'),
+                f"<b>⭐️» {namechanger(call.from_user.first_name, call.from_user.id)} hai raggiunto il livello {gtlvl(new)}</b>"
+        )
+
 
 
 
@@ -3379,7 +3391,8 @@ def Taggatrice (message):
                 bot.send_photo(
                     targa['id'], 
                     open('images/mention.png', 'rb'), 
-                    "<b>🏷 Nuova menzione </b>",
+                    f"<b>🏷 Nuova menzione </b>\n👤 Di » <i>{namechanger(message.from_user.first_name, message.from_user.id)}</i>",
+
                     reply_markup=tastiera
                 )
             except :
@@ -3398,7 +3411,11 @@ def Check_level(message):
     aft = gtlvl(new)
     event_plus(message.from_user.id, message.from_user.first_name, 1)
     if (bf < aft):
-        try_to(message,f"<b>⭐️ {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}")
+        bot.send_photo(
+            gruppo, 
+            open('/images/levelup.png', 'rb'),
+            f"<b>⭐️ » {namechanger(message.from_user.first_name, message.from_user.id)} Hai raggiunto il livello</b> {aft}"
+        )
 
 def Send_quiz(message): 
     cerca = dbinfo.find_one({'argomento': 'quiza'})
